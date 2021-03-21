@@ -1,0 +1,93 @@
+defaultTasks 'clean', 'build'
+
+subprojects {
+    // ignore parent project
+    if (!childProjects.isEmpty()) return
+
+    group = 'com.bn'
+    version = '0.0.1'
+
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    sourceCompatibility = JavaVersion.VERSION_15
+    targetCompatibility = JavaVersion.VERSION_15
+
+    def defaultEncoding = 'UTF-8'
+    tasks.withType(AbstractCompile).each { it.options.encoding = defaultEncoding }
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+    }
+
+    dependencies {
+        compileOnly 'org.projectlombok:lombok'
+        annotationProcessor 'org.projectlombok:lombok'
+        testCompileOnly 'org.projectlombok:lombok'
+        testAnnotationProcessor 'org.projectlombok:lombok'
+    }
+
+    buildDir = "${rootDir}/build/${rootDir.relativePath(projectDir)}"
+
+    tasks.named('test') {
+        useJUnitPlatform()
+        failFast = true
+        testLogging.showStandardStreams = true
+        testLogging.exceptionFormat 'full'
+    }
+
+    tasks.register('mkdir') {
+        group = 'build setup'
+        description = 'Create project directories.'
+        doLast {
+            sourceSets*.java.srcDirs*.each { it.mkdirs() }
+            sourceSets*.resources.srcDirs*.each { it.mkdirs() }
+        }
+    }
+
+    gradle.projectsEvaluated {
+        tasks.withType(JavaCompile) {
+            options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+        }
+    }
+
+    afterEvaluate {
+        // project.group/version is available on afterEvaluate as project.gradle is usually included at top
+        if (parent.depth > 0) {
+            // resolve dependency collision of child projects with same name under different parents, result in unique artifactId
+            group = "${group}.${parent.name}"
+        }
+
+        tasks.withType(Jar).configureEach {
+            // resolve jar name collision of child projects with same name under different parents
+            archiveBaseName.set("${project.group}.${archiveBaseName.get()}")
+
+            manifest {
+                attributes 'Implementation-Title': project.name,
+                        'Implementation-Version': project.version,
+                        'Created-By': "${System.getProperty('java.version')} (${System.getProperty('java.vendor')})",
+                        'Built-With': "gradle ${project.gradle.gradleVersion}"
+            }
+        }
+    }
+
+    configurations {
+        compileOnly {
+            extendsFrom annotationProcessor
+        }
+    }
+}
+
+apply from: file("${rootDir}/gradle/check.gradle")
+
+allprojects {
+    apply plugin: 'idea'
+    idea.module.inheritOutputDirs = true
+}
+
+tasks.named('wrapper') {
+    gradleVersion = '6.7.1'
+}

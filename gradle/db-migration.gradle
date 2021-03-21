@@ -1,0 +1,27 @@
+apply plugin: 'org.flywaydb.flyway'
+
+// use gradlew -Penv=${env} to pass
+// def env = hasProperty('env') ? env : null
+def env = hasProperty('env') ? env : 'dev' // use dev by default
+
+configure(tasks.findAll { it.name.startsWith('flyway') }) {
+    doFirst {
+        flyway {
+            configurations = ['runtimeClasspath'] // use runtimeOnly scope in actual db-migration project
+            placeholderReplacement = false
+            assert project.file('src/main/resources/db/migration').exists()
+
+            // def flywayProperties = env == null ? 'src/main/resources/flyway.properties' : "conf/${env}/flyway.properties"
+            def flywayProperties = "conf/${env}/flyway.properties"
+            assert project.file(flywayProperties).exists()
+
+            def properties = new Properties()
+            project.file(flywayProperties).withInputStream {
+                properties.load(it)
+            }
+            properties.each { key, value ->
+                project.ext[key as String] = value
+            }
+        }
+    }
+}

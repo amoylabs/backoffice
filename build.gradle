@@ -1,0 +1,130 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '2.4.4'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id "org.flywaydb.flyway" version "7.5.2"
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    jcenter()
+}
+
+// Disable bootJar for main project
+bootJar {
+    enabled = false
+}
+
+def junit5Version = '5.3.1'
+def mysqlConnectorVersion = '8.0.22'
+def mybatisStarterVersion = '2.1.4'
+def jMapperVersion = '1.6.1.CR2'
+
+// To customize a managed version of SLF4J which is controlled by the slf4j.version property
+ext['slf4j.version'] = '1.7.20'
+
+apply from: file("${rootDir}/gradle/project.gradle")
+
+// Configure db migration module
+configure(subprojects.findAll { it.name.endsWith('-db-migration') }) {
+    apply from: file("${rootDir}/gradle/db-migration.gradle")
+
+    dependencies {
+        implementation 'org.flywaydb:flyway-core'
+        runtimeOnly "mysql:mysql-connector-java:${mysqlConnectorVersion}"
+    }
+
+    bootJar {
+        enabled = false
+    }
+}
+
+// Configure unit test lib for projects except db migration
+configure(subprojects.findAll { !it.name.endsWith('-db-migration') }) {
+    dependencies {
+        testImplementation "org.junit.jupiter:junit-jupiter-api:${junit5Version}"
+        testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junit5Version}"
+    }
+}
+
+// Configure jar package for sub projects
+configure([project(':back-office-common'),
+           project(':back-office-domain'),
+           project(':back-office-persistence'),
+           project(':back-office-service')]) {
+    bootJar {
+        enabled = false
+    }
+
+    jar {
+        enabled = true
+    }
+}
+
+project(':back-office-common') {
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+    }
+}
+
+project(':back-office-domain') {
+    dependencies {
+        implementation project(':back-office-common')
+        implementation 'org.springframework.boot:spring-boot-starter'
+        implementation "org.mybatis.spring.boot:mybatis-spring-boot-starter:${mybatisStarterVersion}"
+    }
+}
+
+project(':back-office-persistence') {
+    dependencies {
+        implementation project(':back-office-common')
+        implementation project(':back-office-domain')
+        implementation 'org.springframework.boot:spring-boot-starter'
+        // implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+        // implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+        implementation "org.mybatis.spring.boot:mybatis-spring-boot-starter:${mybatisStarterVersion}"
+        implementation "com.googlecode.jmapper-framework:jmapper-core:${jMapperVersion}"
+        runtimeOnly "mysql:mysql-connector-java:${mysqlConnectorVersion}"
+        testRuntimeOnly "mysql:mysql-connector-java:${mysqlConnectorVersion}"
+    }
+}
+
+project(':back-office-service') {
+    dependencies {
+        implementation project(':back-office-common')
+        implementation project(':back-office-domain')
+        implementation project(':back-office-persistence')
+        implementation 'org.springframework.boot:spring-boot-starter'
+        implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+        implementation "com.googlecode.jmapper-framework:jmapper-core:${jMapperVersion}"
+    }
+}
+
+project(':back-office-web') {
+    apply from: file("${rootDir}/gradle/app.gradle")
+
+    dependencies {
+        implementation project(':back-office-common')
+        implementation project(':back-office-domain')
+        implementation project(':back-office-service')
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.springframework.boot:spring-boot-starter-validation'
+        implementation 'org.springframework.boot:spring-boot-starter-actuator'
+        implementation 'org.springframework.boot:spring-boot-starter-undertow'
+        implementation "org.mybatis.spring.boot:mybatis-spring-boot-starter:${mybatisStarterVersion}"
+        implementation "com.googlecode.jmapper-framework:jmapper-core:${jMapperVersion}"
+        testImplementation('org.springframework.boot:spring-boot-starter-test') {
+            exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+        }
+        // developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    }
+
+    configurations {
+        implementation.exclude module: "spring-boot-starter-tomcat"
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+}

@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    jdbcUrl: jdbc:mysql://localhost:3306/main
+    username: dev
+    password: dev
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "info, health, beans, caches, env, httptrace, mappings, heapdump, threaddump"

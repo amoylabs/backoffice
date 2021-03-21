@@ -1,0 +1,8 @@
+### create user
+POST http://localhost:8080/v1/users
+Content-Type: application/json
+
+{
+  "mobile_phone": "13800000590",
+  "password": "Asdf1234!!!!"
+}

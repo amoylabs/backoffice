@@ -1,0 +1,18 @@
+# EditorConfig is awesome: https://EditorConfig.org
+# IDEA: https://www.jetbrains.com/help/idea/configuring-code-style.html#editorconfig
+
+# top-most EditorConfig file
+root = true
+
+# Unix-style newlines with a newline ending every file
+[*]
+# Set default charset
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.java]
+indent_style = space
+indent_size = 4
+ij_continuation_indent_size = 4

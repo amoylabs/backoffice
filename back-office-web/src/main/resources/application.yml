@@ -1,0 +1,12 @@
+spring:
+  profiles:
+    active: dev
+
+server:
+  compression:
+    enabled: true
+    mime-types: text/xml, application/json, application/xml
+    min-response-size: 2048
+  undertow:
+    accesslog:
+      pattern: "%h %l %u %t \"%r\" %s %b \"%{i,Referer}\" \"%{i,User-Agent}\" %D"
