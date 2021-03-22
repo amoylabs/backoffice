@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.time.ZonedDateTime;
+
 @Repository
 @Slf4j
 public class UserRepositoryImpl implements UserRepository {
@@ -25,6 +27,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public Long save(User user) {
         UserDO userDO = UserBuilder.fromDomain(user);
+        userDO.setCreatedTime(ZonedDateTime.now());
         userMapper.insert(userDO);
         log.info("User Repository save data and return id - {}", userDO.getId());
         return userDO.getId();

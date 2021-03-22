@@ -3,6 +3,21 @@ POST http://localhost:8080/v1/users
 Content-Type: application/json
 
 {
+  "name": "foobar",
   "mobile_phone": "13800000590",
   "password": "Asdf1234!!!!"
 }
+
+
+### jwt auth token
+POST http://localhost:8080/v1/users/auth
+Content-Type: application/json
+
+{
+}
+
+
+### jwt auth test
+GET http://localhost:8080/v1/users/auth/test
+Content-Type: application/json
+Authorization: Bear eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmb29iYXIiLCJ1c2VySWQiOiJmb29iYXIiLCJhdXRob3JpdGllcyI6W10sImV4cCI6MTYxNjQ1NDM4MTcwOSwiaWF0IjoxNjE2NDI1NTgxNzA5LCJqdGkiOiJjMDk4OGIzOC02YjhlLTQwZTktYTM1Ny1iYzI3OTFmZWE4NmMifQ.RWd_KpDnxDiFCmTY5EwRtymSNlqEcAER4u2gZvHv1-Y

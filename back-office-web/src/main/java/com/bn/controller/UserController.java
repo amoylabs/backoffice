@@ -1,5 +1,7 @@
 package com.bn.controller;
 
+import com.bn.authorization.AuthorizationRequired;
+import com.bn.authorization.JWT;
 import com.bn.controller.request.CreateUserRequest;
 import com.bn.domain.User;
 import com.bn.service.UserService;
@@ -31,10 +33,24 @@ public class UserController {
     public Long createUser(@Valid @RequestBody CreateUserRequest request) {
         log.info("Create user - {}", request.getMobilePhone());
         User user = User.builder()
+            .name(request.getName())
             .mobilePhone(request.getMobilePhone())
+            .email(request.getEmail())
             .password(request.getPassword())
             .build();
         return userService.create(user);
+    }
+
+    @PostMapping("auth")
+    public String authorize() {
+        User user = User.builder().name("foobar").build(); // FIXME hack user
+        return JWT.generateUserToken(user);
+    }
+
+    @GetMapping("auth/test")
+    @AuthorizationRequired
+    public void testAuthorization() {
+        log.info("Authorization is working nicely!");
     }
 
     @Autowired

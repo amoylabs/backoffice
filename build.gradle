@@ -43,6 +43,7 @@ configure(subprojects.findAll { it.name.endsWith('-db-migration') }) {
 // Configure unit test lib for projects except db migration
 configure(subprojects.findAll { !it.name.endsWith('-db-migration') }) {
     dependencies {
+        compile 'cn.hutool:hutool-all:5.6.1'
         testImplementation "org.junit.jupiter:junit-jupiter-api:${junit5Version}"
         testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junit5Version}"
     }
@@ -114,6 +115,7 @@ project(':back-office-web') {
         implementation 'org.springframework.boot:spring-boot-starter-undertow'
         implementation "org.mybatis.spring.boot:mybatis-spring-boot-starter:${mybatisStarterVersion}"
         implementation "com.googlecode.jmapper-framework:jmapper-core:${jMapperVersion}"
+        implementation "com.nimbusds:nimbus-jose-jwt:latest.release"
         testImplementation('org.springframework.boot:spring-boot-starter-test') {
             exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
         }
