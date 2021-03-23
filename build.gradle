@@ -44,6 +44,7 @@ configure(subprojects.findAll { it.name.endsWith('-db-migration') }) {
 configure(subprojects.findAll { !it.name.endsWith('-db-migration') }) {
     dependencies {
         compile 'cn.hutool:hutool-all:5.6.1'
+        compile 'org.javatuples:javatuples:1.2'
         testImplementation "org.junit.jupiter:junit-jupiter-api:${junit5Version}"
         testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junit5Version}"
     }

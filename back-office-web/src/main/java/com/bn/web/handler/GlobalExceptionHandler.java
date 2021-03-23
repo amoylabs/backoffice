@@ -1,7 +1,8 @@
-package com.bn.web;
+package com.bn.web.handler;
 
 import com.bn.exception.ErrorCode;
 import com.bn.exception.ErrorSeverity;
+import com.bn.web.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;

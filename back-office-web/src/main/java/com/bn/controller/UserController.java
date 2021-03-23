@@ -49,13 +49,13 @@ public class UserController {
         UserAuthorization auth = UserAuthorization.builder()
             .userId(String.valueOf(ThreadLocalRandom.current().nextLong()))
             .userName("HACK")
-            .authorities(List.of(UserAuthorization.ADMINISTER_AUTH))
+            .authorities(List.of())
             .build(); // FIXME hack user
         return JWTProvider.generateToken(auth);
     }
 
     @GetMapping("auth/test")
-    @AuthorizationRequired
+    @AuthorizationRequired("test")
     public void testAuthorization() {
         log.info("Authorization is working nicely!");
     }

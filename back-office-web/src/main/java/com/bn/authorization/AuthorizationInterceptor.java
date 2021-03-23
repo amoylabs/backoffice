@@ -26,20 +26,20 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 
             final Optional<String> tokenOptional = getRequestedAuthorizationToken(request);
             if (tokenOptional.isEmpty()) {
-                response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED);
+                response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, "Incorrect token");
                 return false;
             }
 
-            Optional<UserAuthorization> authOptional = JWTProvider.verifyToken(tokenOptional.get());
-            if (authOptional.isEmpty()) {
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+            JWTVerificationResult verificationResult = JWTProvider.verifyToken(tokenOptional.get());
+            if (!verificationResult.isPassed()) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, verificationResult.getFailureMessage());
                 return false;
             }
 
-            UserAuthorization auth = authOptional.get();
+            UserAuthorization auth = verificationResult.getAuth();
             log.info("Authorized user - {}:{}", auth.getUserId(), auth.getUserName());
             if (auth.getAuthorities() == null || auth.getAuthorities().isEmpty()) {
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Lack of user authority");
                 return false;
             }
 
@@ -49,7 +49,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 
             // User authorities should contains all of the required authorities
             if (Arrays.stream(authRequired.value()).anyMatch(requiredAuth -> !auth.getAuthorities().contains(requiredAuth))) {
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Lack of user authority");
                 return false;
             }
         }
@@ -63,7 +63,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
             return authRequiredOnMethod;
         }
 
-        return method.getBean().getClass().getAnnotation(AuthorizationRequired.class);
+        return method.getBean().getClass().getDeclaredAnnotation(AuthorizationRequired.class);
     }
 
     private Optional<String> getRequestedAuthorizationToken(HttpServletRequest request) {
@@ -77,6 +77,6 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
             return Optional.empty();
         }
 
-        return Optional.of(authorizationString.replace(authorizationString, AUTHORIZATION_TOKEN_PREFIX));
+        return Optional.of(authorizationString.replace(AUTHORIZATION_TOKEN_PREFIX, "")); // Remove prefix
     }
 }

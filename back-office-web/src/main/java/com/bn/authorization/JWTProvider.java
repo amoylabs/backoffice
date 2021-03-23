@@ -16,7 +16,6 @@ import com.nimbusds.jose.crypto.MACVerifier;
 import lombok.extern.slf4j.Slf4j;
 
 import java.text.ParseException;
-import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -52,7 +51,7 @@ public class JWTProvider {
             .build();
     }
 
-    public static Optional<UserAuthorization> verifyToken(String token) {
+    public static JWTVerificationResult verifyToken(String token) {
         String payloadText;
         try {
             // Parse token to JWT object
@@ -60,20 +59,20 @@ public class JWTProvider {
             // verify JWT object
             JWSVerifier jwsVerifier = new MACVerifier(JWT_SECURE_KEY);
             if (!jwsObject.verify(jwsVerifier)) {
-                return Optional.empty();
+                return JWTVerificationResult.fail("Token verification failure");
             }
 
             payloadText = jwsObject.getPayload().toString();
         } catch (ParseException | JOSEException ex) {
             log.error("JWT Verification Error", ex);
-            return Optional.empty();
+            return JWTVerificationResult.fail("Token verification failure");
         }
 
         JWTPayload payload = JSONUtil.toBean(payloadText, JWTPayload.class);
         if (payload.getExp() < System.currentTimeMillis()) {
-            return Optional.empty();
+            return JWTVerificationResult.fail("Token is expired");
         }
 
-        return Optional.of(payload.getAuth());
+        return JWTVerificationResult.pass(payload.getAuth());
     }
 }
