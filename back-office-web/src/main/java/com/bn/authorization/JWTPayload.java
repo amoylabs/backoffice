@@ -4,16 +4,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.List;
-
 @Builder
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class JWTPayload {
     private String sub; // subject
+    private String iss; // issuer
+    private String aud; // audience
     private Long iat; // sign time
     private Long exp; // expire time
     private String jti; // JWT ID
-    private String userId; // user id
-    private List<String> authorities; // user authorities
+    private UserAuthorization auth; // user info
 }

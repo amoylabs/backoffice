@@ -1,7 +1,8 @@
 package com.bn.controller;
 
 import com.bn.authorization.AuthorizationRequired;
-import com.bn.authorization.JWT;
+import com.bn.authorization.JWTProvider;
+import com.bn.authorization.UserAuthorization;
 import com.bn.controller.request.CreateUserRequest;
 import com.bn.domain.User;
 import com.bn.service.UserService;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 @RequestMapping("v1/users")
 @RestController
@@ -43,8 +46,12 @@ public class UserController {
 
     @PostMapping("auth")
     public String authorize() {
-        User user = User.builder().name("foobar").build(); // FIXME hack user
-        return JWT.generateUserToken(user);
+        UserAuthorization auth = UserAuthorization.builder()
+            .userId(String.valueOf(ThreadLocalRandom.current().nextLong()))
+            .userName("HACK")
+            .authorities(List.of(UserAuthorization.ADMINISTER_AUTH))
+            .build(); // FIXME hack user
+        return JWTProvider.generateToken(auth);
     }
 
     @GetMapping("auth/test")

@@ -9,11 +9,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class JWTException extends RuntimeException implements ErrorCode {
     private final String errorCode;
 
-    public JWTException(String errorCode, String message) {
-        super(message);
-        this.errorCode = errorCode;
-    }
-
     public JWTException(String errorCode, String message, Throwable cause) {
         super(message, cause);
         this.errorCode = errorCode;
@@ -21,7 +16,7 @@ public class JWTException extends RuntimeException implements ErrorCode {
 
     @Override
     public String getErrorCode() {
-        return this.errorCode == null ? "JWT_EXCEPTION" : this.errorCode;
+        return this.errorCode;
     }
 
     @Override

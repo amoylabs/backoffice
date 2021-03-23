@@ -1,8 +1,8 @@
 package com.bn.authorization;
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.json.JSONUtil;
-import com.bn.domain.User;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JOSEObjectType;
 import com.nimbusds.jose.JWSAlgorithm;
@@ -13,19 +13,21 @@ import com.nimbusds.jose.JWSVerifier;
 import com.nimbusds.jose.Payload;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
+import lombok.extern.slf4j.Slf4j;
 
 import java.text.ParseException;
-import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
-public class JWT {
+@Slf4j
+public class JWTProvider {
     private static final String JWT_SECURE_KEY = SecureUtil.md5("sth.private.as.the.key");
     private static final long JWT_MAX_AGE = 60 * 60 * 8 * 1000; // 8h
 
-    public static String generateUserToken(User user) {
+    public static String generateToken(UserAuthorization auth) {
         JWSHeader jwsHeader = new JWSHeader.Builder(JWSAlgorithm.HS256).type(JOSEObjectType.JWT).build();
         // create payload with user info
-        Payload payload = new Payload(JSONUtil.toJsonStr(userToPayload(user)));
+        Payload payload = new Payload(JSONUtil.toJsonStr(userToPayload(auth)));
         // create JWS object
         JWSObject jwsObject = new JWSObject(jwsHeader, payload);
         try {
@@ -39,19 +41,18 @@ public class JWT {
         return jwsObject.serialize();
     }
 
-    private static JWTPayload userToPayload(User user) {
+    private static JWTPayload userToPayload(UserAuthorization auth) {
         long currentTime = System.currentTimeMillis();
         return JWTPayload.builder()
-            .sub(user.getName())
+            .sub(StrUtil.format("JWS - {}", auth.getUserName()))
             .iat(currentTime)
             .exp(currentTime + JWT_MAX_AGE)
             .jti(UUID.randomUUID().toString())
-            .userId(user.getName())
-            .authorities(List.of()) // TODO
+            .auth(auth)
             .build();
     }
 
-    public static JWTPayload verifyToken(String token) {
+    public static Optional<UserAuthorization> verifyToken(String token) {
         String payloadText;
         try {
             // Parse token to JWT object
@@ -59,19 +60,20 @@ public class JWT {
             // verify JWT object
             JWSVerifier jwsVerifier = new MACVerifier(JWT_SECURE_KEY);
             if (!jwsObject.verify(jwsVerifier)) {
-                throw new AuthorizationException("JWT token is illegal by verified"); // FIXME
+                return Optional.empty();
             }
 
             payloadText = jwsObject.getPayload().toString();
         } catch (ParseException | JOSEException ex) {
-            throw new JWTException("JWT_VERIFY_TOKEN_ERROR", ex.getLocalizedMessage(), ex); // FIXME
+            log.error("JWT Verification Error", ex);
+            return Optional.empty();
         }
 
         JWTPayload payload = JSONUtil.toBean(payloadText, JWTPayload.class);
         if (payload.getExp() < System.currentTimeMillis()) {
-            throw new AuthorizationException("JWT token has been expired"); // FIXME
+            return Optional.empty();
         }
 
-        return payload;
+        return Optional.of(payload.getAuth());
     }
 }
