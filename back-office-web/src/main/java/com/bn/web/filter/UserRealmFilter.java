@@ -28,9 +28,9 @@ public class UserRealmFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-        HttpServletResponse httpServletResponse = (HttpServletResponse) response;
         String authorizationString = httpServletRequest.getHeader(AUTHORIZATION_HEADER_NAME);
         if (StrUtil.isNotBlank(authorizationString)) {
+            HttpServletResponse httpServletResponse = (HttpServletResponse) response;
             if (authorizationString.indexOf(AUTHORIZATION_TOKEN_PREFIX) != 0) { // Should be "Bear xxx.xxx.xxx"
                 httpServletResponse.setStatus(HttpStatus.PRECONDITION_FAILED.value());
                 httpServletResponse.getWriter().write("Incorrect token");
@@ -48,7 +48,7 @@ public class UserRealmFilter implements Filter {
             UserRealm userRealm = Objects.requireNonNull(verificationResult.getUserRealm(), "User realm should NOT be null");
             UserRealmContextHolder.set(userRealm);
         } else {
-            UserRealmContextHolder.set(UserRealm.anonymous()); // ensure safe access to UserRealmContextHolder
+            UserRealmContextHolder.set(UserRealm.anonymous()); // ensure safely access to UserRealmContextHolder
         }
 
         try {

@@ -9,7 +9,7 @@ Content-Type: application/json
 Authorization: Bear eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJKV1MgLSBIQUNLIiwicmVhbG0iOnsicmVhbG1zIjpbInN1cGVyIl0sInVzZXJOYW1lIjoiSEFDSyIsInVzZXJJZCI6IjI5MDAzMjk0OTU5OTAzNTY0MzMifSwiZXhwIjoxNjE2Nzk5MDk1NjcxLCJpYXQiOjE2MTY3NzAyOTU2NzEsImp0aSI6IjY4NWE4NWYzLWQxZTgtNDdkMi1iNmUyLTA1YTQ5ZjI2NTIxYSJ9.4wuhttGZnQ6lg7p8P-tp6jbvCvDbsDAwE4NAvTlo95c
 
 {
-  "name": "hacky",
+  "name": "hacker",
   "mobile_phone": "13800000590",
   "password": "Asdf1234!!!!"
 }

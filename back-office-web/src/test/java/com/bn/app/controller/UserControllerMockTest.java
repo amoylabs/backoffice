@@ -1,10 +1,12 @@
 package com.bn.app.controller;
 
+import com.bn.authorization.UserAuthorizationInterceptor;
 import com.bn.controller.UserController;
 import com.bn.controller.request.CreateUserRequest;
 import com.bn.domain.User;
 import com.bn.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -14,11 +16,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import java.io.IOException;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(UserController.class)
@@ -28,7 +33,14 @@ public class UserControllerMockTest {
     @Autowired
     private ObjectMapper objectMapper;
     @MockBean
+    private UserAuthorizationInterceptor userAuthorizationInterceptor;
+    @MockBean
     private UserService userService;
+
+    @BeforeEach
+    void setup() throws IOException {
+        when(userAuthorizationInterceptor.preHandle(any(), any(), any())).thenReturn(Boolean.TRUE);
+    }
 
     @Test
     public void createUser() throws Exception {
@@ -42,11 +54,9 @@ public class UserControllerMockTest {
         MockHttpServletRequestBuilder builder = post("/v1/users")
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(request));
-        // ResultMatcher success = status().isOk();
-        // ResultMatcher body = content().string(result.toString());
-        // mockMvc.perform(builder).andDo(print()).andExpect(success).andExpect(body);
-        ResultMatcher badRequest = status().isUnauthorized();
-        mockMvc.perform(builder).andDo(print()).andExpect(badRequest);
+        ResultMatcher success = status().isOk();
+        ResultMatcher body = content().string(result.toString());
+        mockMvc.perform(builder).andDo(print()).andExpect(success).andExpect(body);
     }
 
     @Test
@@ -55,7 +65,7 @@ public class UserControllerMockTest {
         MockHttpServletRequestBuilder builder = post("/v1/users")
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(request));
-        ResultMatcher badRequest = status().isUnauthorized();
+        ResultMatcher badRequest = status().isBadRequest();
         mockMvc.perform(builder).andDo(print()).andExpect(badRequest);
     }
 }

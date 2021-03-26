@@ -3,6 +3,7 @@ package com.bn.authorization;
 import cn.hutool.core.util.ArrayUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
 
+@Component
 @Slf4j
 public class UserAuthorizationInterceptor implements HandlerInterceptor {
     private static final String USER_AUTH_FAILURE_MESSAGE = "Lack of user authority";
