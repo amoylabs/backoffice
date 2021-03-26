@@ -1,7 +1,7 @@
 spring:
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
-    jdbcUrl: jdbc:mysql://backoffice-mysql:3306/main
+    jdbcUrl: jdbc:mysql://mysql-svc.mysql:3306/main
     username: root
     password: root
 
