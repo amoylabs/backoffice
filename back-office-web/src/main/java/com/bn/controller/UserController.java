@@ -49,7 +49,7 @@ public class UserController {
         UserAuthorization auth = UserAuthorization.builder()
             .userId(String.valueOf(ThreadLocalRandom.current().nextLong()))
             .userName("HACK")
-            .authorities(List.of())
+            .authorities(List.of(UserAuthorization.ADMINISTER_AUTH))
             .build(); // FIXME hack user
         return JWTProvider.generateToken(auth);
     }

@@ -1,8 +1,9 @@
 package com.bn.authorization;
 
 import cn.hutool.core.util.ArrayUtil;
-import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -10,11 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Optional;
 
 @Slf4j
 public class AuthorizationInterceptor implements HandlerInterceptor {
-    private static final String AUTHORIZATION_TOKEN_PREFIX = "Bear ";
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
@@ -24,19 +23,13 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
                 return true;
             }
 
-            final Optional<String> tokenOptional = getRequestedAuthorizationToken(request);
-            if (tokenOptional.isEmpty()) {
-                response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, "Incorrect token");
+            Object userAuthContext = RequestContextHolder.currentRequestAttributes().getAttribute(UserAuthorization.USER_AUTH_CONTEXT_NAME, RequestAttributes.SCOPE_REQUEST);
+            if (!(userAuthContext instanceof UserAuthorization)) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Lack of user authority");
                 return false;
             }
 
-            JWTVerificationResult verificationResult = JWTProvider.verifyToken(tokenOptional.get());
-            if (!verificationResult.isPassed()) {
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, verificationResult.getFailureMessage());
-                return false;
-            }
-
-            UserAuthorization auth = verificationResult.getAuth();
+            UserAuthorization auth = (UserAuthorization) userAuthContext;
             log.info("Authorized user - {}:{}", auth.getUserId(), auth.getUserName());
             if (auth.getAuthorities() == null || auth.getAuthorities().isEmpty()) {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Lack of user authority");
@@ -64,19 +57,5 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
         }
 
         return method.getBean().getClass().getDeclaredAnnotation(AuthorizationRequired.class);
-    }
-
-    private Optional<String> getRequestedAuthorizationToken(HttpServletRequest request) {
-        String authorizationString = request.getHeader("Authorization");
-        if (StrUtil.isBlankIfStr(authorizationString)) {
-            return Optional.empty();
-        }
-
-        log.info("Authorization token - {}", authorizationString);
-        if (authorizationString.indexOf(AUTHORIZATION_TOKEN_PREFIX) != 0) { // Should be "Bear xxx.xxx.xxx"
-            return Optional.empty();
-        }
-
-        return Optional.of(authorizationString.replace(AUTHORIZATION_TOKEN_PREFIX, "")); // Remove prefix
     }
 }

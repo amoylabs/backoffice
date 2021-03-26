@@ -23,15 +23,15 @@ public final class JWTVerificationResult {
         this.failureMsg = failureMsg;
     }
 
-    Boolean isPassed() {
+    public Boolean isPassed() {
         return passed;
     }
 
-    UserAuthorization getAuth() {
+    public UserAuthorization getAuth() {
         return auth;
     }
 
-    String getFailureMessage() {
+    public String getFailureMessage() {
         return failureMsg;
     }
 }
