@@ -14,5 +14,5 @@ public class JWTPayload {
     private Long iat; // sign time
     private Long exp; // expire time
     private String jti; // JWT ID
-    private UserAuthorization auth; // user info
+    private UserRealm realm; // user realm
 }

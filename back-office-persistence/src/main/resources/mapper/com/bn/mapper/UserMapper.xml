@@ -9,10 +9,13 @@
         <result column="password" jdbcType="VARCHAR" property="password"/>
         <result column="password_salt" jdbcType="VARCHAR" property="passwordSalt"/>
         <result column="status" jdbcType="VARCHAR" property="status"/>
+        <result column="role_id" jdbcType="VARCHAR" property="roleId"/>
         <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="created_by" jdbcType="VARCHAR" property="createdBy"/>
         <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime"/>
+        <result column="updated_by" jdbcType="VARCHAR" property="updatedBy"/>
     </resultMap>
-    <sql id="Base_Column_List">id, name, mobile_phone, email, password, password_salt, status, created_time, updated_time</sql>
+    <sql id="Base_Column_List">id, name, mobile_phone, email, password, password_salt, status, role_id, created_time, created_by, updated_time, updated_by</sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
@@ -20,7 +23,7 @@
         WHERE id = #{id,jdbcType=INTEGER}
     </select>
     <insert id="insert" parameterType="com.bn.persistence.UserDO" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO `user` (name, mobile_phone, email, password, password_salt, status, created_time, updated_time)
-        VALUES (#{name,jdbcType=VARCHAR}, #{mobilePhone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{passwordSalt,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedTime,jdbcType=TIMESTAMP})
+        INSERT INTO `user` (name, mobile_phone, email, password, password_salt, status, role_id, created_time, created_by, updated_time, updated_by)
+        VALUES (#{name,jdbcType=VARCHAR}, #{mobilePhone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{passwordSalt,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{roleId,jdbcType=VARCHAR}, #{createdTime,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=VARCHAR}, #{updatedTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=VARCHAR})
     </insert>
 </mapper>

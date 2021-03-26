@@ -1,18 +1,37 @@
 package com.bn.authorization;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+public final class UserAuthorization {
+    static UserAuthorization valid(UserRealm auth) {
+        return new UserAuthorization(auth);
+    }
 
-import java.util.List;
+    static UserAuthorization invalid(String message) {
+        return new UserAuthorization(message);
+    }
 
-@Builder
-@Data
-@EqualsAndHashCode(callSuper = false)
-public class UserAuthorization {
-    public static final String ADMINISTER_AUTH = "super";
+    private final Boolean valid;
+    private UserRealm userRealm;
+    private String failureMsg;
 
-    private String userId;
-    private String userName;
-    private List<String> authorities; // user authorities
+    private UserAuthorization(UserRealm userRealm) {
+        this.valid = Boolean.TRUE;
+        this.userRealm = userRealm;
+    }
+
+    private UserAuthorization(String failureMsg) {
+        this.valid = Boolean.FALSE;
+        this.failureMsg = failureMsg;
+    }
+
+    public Boolean isValid() {
+        return valid;
+    }
+
+    public UserRealm getUserRealm() {
+        return userRealm;
+    }
+
+    public String getFailureMessage() {
+        return failureMsg;
+    }
 }

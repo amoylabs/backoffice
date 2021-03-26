@@ -23,24 +23,24 @@ public class UserAuthorizationInterceptor implements HandlerInterceptor {
                 return true;
             }
 
-            UserAuthorization authContext = UserAuthorizationContextHolder.get();
-            if (authContext == null) {
+            UserRealm userRealm = UserRealmContextHolder.get();
+            if (userRealm == null) {
                 sendUnauthorizedError(response);
                 return false;
             }
 
-            log.info("Authorized user - {}:{}", authContext.getUserId(), authContext.getUserName());
-            if (authContext.getAuthorities() == null || authContext.getAuthorities().isEmpty()) {
+            log.info("Authorized user - {}:{}", userRealm.getUserId(), userRealm.getUserName());
+            if (userRealm.getRealms() == null || userRealm.getRealms().isEmpty()) {
                 sendUnauthorizedError(response);
                 return false;
             }
 
-            if (authContext.getAuthorities().contains(UserAuthorization.ADMINISTER_AUTH)) {
+            if (userRealm.getRealms().contains(UserRealm.ADMINISTER_AUTH)) {
                 return true;
             }
 
             // User authorities should contains all of the required authorities
-            if (Arrays.stream(authRequired.value()).anyMatch(requiredAuth -> !authContext.getAuthorities().contains(requiredAuth))) {
+            if (Arrays.stream(authRequired.value()).anyMatch(requiredAuth -> !userRealm.getRealms().contains(requiredAuth))) {
                 sendUnauthorizedError(response);
                 return false;
             }

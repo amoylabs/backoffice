@@ -1,6 +1,12 @@
+### user auth token
+POST http://localhost:8080/v1/users/auth/hack
+Content-Type: application/json
+
+
 ### create user
 POST http://localhost:8080/v1/users
 Content-Type: application/json
+Authorization: Bear eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJKV1MgLSBIQUNLIiwicmVhbG0iOnsicmVhbG1zIjpbInN1cGVyIl0sInVzZXJOYW1lIjoiSEFDSyIsInVzZXJJZCI6IjI5MDAzMjk0OTU5OTAzNTY0MzMifSwiZXhwIjoxNjE2Nzk5MDk1NjcxLCJpYXQiOjE2MTY3NzAyOTU2NzEsImp0aSI6IjY4NWE4NWYzLWQxZTgtNDdkMi1iNmUyLTA1YTQ5ZjI2NTIxYSJ9.4wuhttGZnQ6lg7p8P-tp6jbvCvDbsDAwE4NAvTlo95c
 
 {
   "name": "hacky",
@@ -9,19 +15,5 @@ Content-Type: application/json
 }
 
 ### get user info
-GET http://localhost:8080/v1/users/1
+GET http://localhost:8080/v1/users/3
 
-
-### jwt auth token
-POST http://localhost:8080/v1/users/auth
-Content-Type: application/json
-
-{
-}
-
-
-### jwt auth test
-GET http://localhost:8080/v1/users/auth/test
-Content-Type: application/json
-Authorization: ffdd
-#Authorization: Bear eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJKV1MgLSBIQUNLIiwiYXV0aCI6eyJ1c2VyTmFtZSI6IkhBQ0siLCJ1c2VySWQiOiIxMTg3MzUyMzYxNTQzNDM5Nzk0IiwiYXV0aG9yaXRpZXMiOltdfSwiZXhwIjoxNjE2NTM4MjQ2Njg0LCJpYXQiOjE2MTY1MDk0NDY2ODQsImp0aSI6ImU2NTdjMjAyLWVkODItNDIzMi1hMzc1LWQ3YTU0OTMxZjg5MCJ9.Ejhz5HcbEYwRZxpsrxSemHqKZ5_3XZkZeEAW-NHPpjE

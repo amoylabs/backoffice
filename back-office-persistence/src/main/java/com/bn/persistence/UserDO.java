@@ -18,6 +18,9 @@ public class UserDO {
     private String password;
     private String passwordSalt;
     private UserStatus status;
+    private String roleId;
     private ZonedDateTime createdTime;
+    private String createdBy;
     private ZonedDateTime updatedTime;
+    private String updatedBy;
 }

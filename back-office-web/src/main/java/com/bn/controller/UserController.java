@@ -1,8 +1,9 @@
 package com.bn.controller;
 
-import com.bn.authorization.UserAuthorizationRequired;
 import com.bn.authorization.JWTProvider;
-import com.bn.authorization.UserAuthorization;
+import com.bn.authorization.UserAuthorizationRequired;
+import com.bn.authorization.UserRealm;
+import com.bn.authorization.UserRealmContextHolder;
 import com.bn.controller.request.CreateUserRequest;
 import com.bn.domain.User;
 import com.bn.service.UserService;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
 @RequestMapping("v1/users")
@@ -33,6 +35,7 @@ public class UserController {
     }
 
     @PostMapping
+    @UserAuthorizationRequired("user-admin")
     public Long createUser(@Valid @RequestBody CreateUserRequest request) {
         log.info("Create user - {}", request.getMobilePhone());
         User user = User.builder()
@@ -41,23 +44,18 @@ public class UserController {
             .email(request.getEmail())
             .password(request.getPassword())
             .build();
-        return userService.create(user);
+        UserRealm context = Objects.requireNonNull(UserRealmContextHolder.get());
+        return userService.create(user, context.getUserName());
     }
 
-    @PostMapping("auth")
+    @PostMapping("auth/hack")
     public String authorize() {
-        UserAuthorization auth = UserAuthorization.builder()
+        UserRealm auth = UserRealm.builder()
             .userId(String.valueOf(ThreadLocalRandom.current().nextLong()))
             .userName("HACK")
-            .authorities(List.of(UserAuthorization.ADMINISTER_AUTH))
+            .realms(List.of(UserRealm.ADMINISTER_AUTH))
             .build(); // FIXME hack user
         return JWTProvider.generateToken(auth);
-    }
-
-    @GetMapping("auth/test")
-    @UserAuthorizationRequired("test")
-    public void testAuthorization() {
-        log.info("Authorization is working nicely!");
     }
 
     @Autowired

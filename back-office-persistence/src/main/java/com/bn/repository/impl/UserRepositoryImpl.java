@@ -25,9 +25,10 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Long save(User user) {
+    public Long save(User user, String createdBy) {
         UserDO userDO = UserBuilder.fromDomain(user);
         userDO.setCreatedTime(ZonedDateTime.now());
+        userDO.setCreatedBy(createdBy);
         userMapper.insert(userDO);
         log.info("User Repository save data and return id - {}", userDO.getId());
         return userDO.getId();

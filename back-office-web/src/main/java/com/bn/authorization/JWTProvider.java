@@ -23,7 +23,7 @@ public class JWTProvider {
     private static final String JWT_SECURE_KEY = SecureUtil.md5("sth.private.as.the.key");
     private static final long JWT_MAX_AGE = 60 * 60 * 8 * 1000; // 8h
 
-    public static String generateToken(UserAuthorization auth) {
+    public static String generateToken(UserRealm auth) {
         JWSHeader jwsHeader = new JWSHeader.Builder(JWSAlgorithm.HS256).type(JOSEObjectType.JWT).build();
         // create payload with user info
         Payload payload = new Payload(JSONUtil.toJsonStr(userToPayload(auth)));
@@ -41,18 +41,18 @@ public class JWTProvider {
         return jwsObject.serialize();
     }
 
-    private static JWTPayload userToPayload(UserAuthorization auth) {
+    private static JWTPayload userToPayload(UserRealm auth) {
         long currentTime = System.currentTimeMillis();
         return JWTPayload.builder()
             .sub(StrUtil.format("JWS - {}", auth.getUserName()))
             .iat(currentTime)
             .exp(currentTime + JWT_MAX_AGE)
             .jti(UUID.randomUUID().toString())
-            .auth(auth)
+            .realm(auth)
             .build();
     }
 
-    public static JWTVerificationResult verifyToken(String token) {
+    public static UserAuthorization verifyToken(String token) {
         String payloadText;
         try {
             // Parse token to JWT object
@@ -60,20 +60,20 @@ public class JWTProvider {
             // verify JWT object
             JWSVerifier jwsVerifier = new MACVerifier(JWT_SECURE_KEY);
             if (!jwsObject.verify(jwsVerifier)) {
-                return JWTVerificationResult.fail("Token verification failure");
+                return UserAuthorization.invalid("Token verification failure");
             }
 
             payloadText = jwsObject.getPayload().toString();
         } catch (ParseException | JOSEException ex) {
             log.error("JWT Verification Error", ex);
-            return JWTVerificationResult.fail("Token verification failure");
+            return UserAuthorization.invalid("Token verification failure");
         }
 
         JWTPayload payload = JSONUtil.toBean(payloadText, JWTPayload.class);
         if (payload.getExp() < System.currentTimeMillis()) {
-            return JWTVerificationResult.fail("Token is expired");
+            return UserAuthorization.invalid("Token is expired");
         }
 
-        return JWTVerificationResult.pass(payload.getAuth());
+        return UserAuthorization.valid(payload.getRealm());
     }
 }
