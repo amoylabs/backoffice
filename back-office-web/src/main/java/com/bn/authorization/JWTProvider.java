@@ -34,6 +34,7 @@ public class JWTProvider {
             JWSSigner jwsSigner = new MACSigner(JWT_SECURE_KEY);
             jwsObject.sign(jwsSigner);
         } catch (JOSEException ex) {
+            log.error("JWT Generate Token Error", ex);
             throw new JWTException("JWT_USER_TOKEN_FAILURE", ex.getLocalizedMessage(), ex);
         }
 

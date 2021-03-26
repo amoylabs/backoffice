@@ -10,7 +10,6 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class UserAuthorization {
-    public static final String USER_AUTH_CONTEXT_NAME = "__user_auth";
     public static final String ADMINISTER_AUTH = "super";
 
     private String userId;

@@ -1,6 +1,6 @@
 package com.bn.controller;
 
-import com.bn.authorization.AuthorizationRequired;
+import com.bn.authorization.UserAuthorizationRequired;
 import com.bn.authorization.JWTProvider;
 import com.bn.authorization.UserAuthorization;
 import com.bn.controller.request.CreateUserRequest;
@@ -55,7 +55,7 @@ public class UserController {
     }
 
     @GetMapping("auth/test")
-    @AuthorizationRequired("test")
+    @UserAuthorizationRequired("test")
     public void testAuthorization() {
         log.info("Authorization is working nicely!");
     }
