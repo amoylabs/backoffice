@@ -20,6 +20,7 @@ def junit5Version = '5.3.1'
 def mysqlConnectorVersion = '8.0.22'
 def mybatisStarterVersion = '2.1.4'
 def jMapperVersion = '1.6.1.CR2'
+def micrometerVersion = '1.6.5'
 
 // To customize a managed version of SLF4J which is controlled by the slf4j.version property
 ext['slf4j.version'] = '1.7.20'
@@ -43,6 +44,8 @@ configure(subprojects.findAll { it.name.endsWith('-db-migration') }) {
 // Configure unit test lib for projects except db migration
 configure(subprojects.findAll { !it.name.endsWith('-db-migration') }) {
     dependencies {
+        implementation 'cn.hutool:hutool-all:5.6.1'
+        implementation 'org.javatuples:javatuples:1.2'
         testImplementation "org.junit.jupiter:junit-jupiter-api:${junit5Version}"
         testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junit5Version}"
     }
