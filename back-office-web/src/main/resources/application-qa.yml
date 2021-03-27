@@ -1,12 +1,14 @@
 spring:
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
-    jdbcUrl: jdbc:mysql://localhost:3306/main
-    username: dev
-    password: dev
+    jdbcUrl: jdbc:mysql://mysql-svc.mysql:3306/main
+    username: root
+    password: root
 
 management:
   endpoints:
     web:
       exposure:
-        include: "info, health, beans, caches, env, httptrace, mappings, heapdump, threaddump"
+        include: "info, health, beans, caches, env, httptrace, mappings, heapdump, threaddump, prometheus"
+    health:
+      show-details: ALWAYS
