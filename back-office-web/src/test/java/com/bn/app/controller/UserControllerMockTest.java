@@ -54,7 +54,7 @@ public class UserControllerMockTest {
         MockHttpServletRequestBuilder builder = post("/v1/users")
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(request));
-        ResultMatcher success = status().isOk();
+        ResultMatcher success = status().isCreated();
         ResultMatcher body = content().string(result.toString());
         mockMvc.perform(builder).andDo(print()).andExpect(success).andExpect(body);
     }

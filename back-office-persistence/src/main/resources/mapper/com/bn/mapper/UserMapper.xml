@@ -22,6 +22,12 @@
         FROM user
         WHERE id = #{id,jdbcType=INTEGER}
     </select>
+    <select id="selectByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM user
+        WHERE name = #{name,jdbcType=VARCHAR}
+    </select>
     <insert id="insert" parameterType="com.bn.persistence.UserDO" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO `user` (name, mobile_phone, email, password, password_salt, status, role_id, created_time, created_by, updated_time, updated_by)
         VALUES (#{name,jdbcType=VARCHAR}, #{mobilePhone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{passwordSalt,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{roleId,jdbcType=VARCHAR}, #{createdTime,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=VARCHAR}, #{updatedTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=VARCHAR})

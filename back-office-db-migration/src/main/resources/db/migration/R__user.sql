@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS `user`
     password      VARCHAR(100) NOT NULL,
     password_salt VARCHAR(50)  NOT NULL,
     status        VARCHAR(10)  NOT NULL,
-    role_id       VARCHAR(32)  NULL,
+    role_id       VARCHAR(36)  NULL,
     created_time  DATETIME     NOT NULL,
     created_by    VARCHAR(255) NOT NULL,
     updated_time  DATETIME     NULL,

@@ -1,8 +1,8 @@
 CREATE TABLE IF NOT EXISTS role_realm
 (
-    id            VARCHAR(32)  NOT NULL,
-    role_id       VARCHAR(32)  NOT NULL,
-    realm_id      VARCHAR(32)  NOT NULL,
+    id            VARCHAR(36)  NOT NULL,
+    role_id       VARCHAR(36)  NOT NULL,
+    realm_id      VARCHAR(36)  NOT NULL,
     created_time  DATETIME     NOT NULL,
     created_by    VARCHAR(255) NOT NULL,
     PRIMARY KEY (id),

@@ -5,15 +5,18 @@ import com.bn.authorization.UserAuthorizationRequired;
 import com.bn.authorization.UserRealm;
 import com.bn.authorization.UserRealmContextHolder;
 import com.bn.controller.request.CreateUserRequest;
+import com.bn.controller.response.UserVO;
 import com.bn.domain.User;
 import com.bn.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -29,13 +32,21 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("{id}")
-    public User getUser(@NotNull @PathVariable Long id) {
+    public UserVO getUser(@NotNull @PathVariable Long id) {
         log.info("Get user - {}", id);
-        return userService.get(id);
+        User user = userService.get(id);
+        return UserVO.builder()
+            .id(user.getId())
+            .name(user.getName())
+            .email(user.getEmail())
+            .mobilePhone(user.getMobilePhone())
+            .status(user.getStatus().name())
+            .build();
     }
 
     @PostMapping
-    @UserAuthorizationRequired("user-admin")
+    @UserAuthorizationRequired("admin")
+    @ResponseStatus(HttpStatus.CREATED)
     public Long createUser(@Valid @RequestBody CreateUserRequest request) {
         log.info("Create user - {}", request.getMobilePhone());
         User user = User.builder()

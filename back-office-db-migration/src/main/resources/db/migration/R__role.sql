@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS role
 (
-    id            VARCHAR(32)  NOT NULL,
+    id            VARCHAR(36)  NOT NULL,
     name          VARCHAR(50)  NOT NULL,
     description   VARCHAR(200) NOT NULL,
     created_time  DATETIME     NOT NULL,

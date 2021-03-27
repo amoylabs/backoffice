@@ -21,7 +21,7 @@ import java.util.Objects;
 
 @Component
 @Order(1)
-public class UserRealmFilter implements Filter {
+public class UserAuthenticationFilter implements Filter {
     private static final String AUTHORIZATION_HEADER_NAME = "Authorization";
     private static final String AUTHORIZATION_TOKEN_PREFIX = "Bear ";
 
@@ -48,7 +48,7 @@ public class UserRealmFilter implements Filter {
             UserRealm userRealm = Objects.requireNonNull(verificationResult.getUserRealm(), "User realm should NOT be null");
             UserRealmContextHolder.set(userRealm);
         } else {
-            UserRealmContextHolder.set(UserRealm.anonymous()); // ensure safely access to UserRealmContextHolder
+            UserRealmContextHolder.set(UserRealm.anonymous()); // ensure safely access to User Realm Context
         }
 
         try {

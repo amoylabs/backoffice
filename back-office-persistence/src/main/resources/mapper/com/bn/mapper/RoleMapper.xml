@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bn.mapper.RoleMapper">
+    <resultMap id="BaseResultMap" type="com.bn.persistence.RoleDO">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="description" jdbcType="VARCHAR" property="description"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="created_by" jdbcType="VARCHAR" property="createdBy"/>
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime"/>
+        <result column="updated_by" jdbcType="VARCHAR" property="updatedBy"/>
+    </resultMap>
+    <sql id="Base_Column_List">id, name, description, created_time, created_by, updated_time, updated_by</sql>
+    <select id="list" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM role
+    </select>
+    <select id="selectByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM role
+        WHERE name = #{name,jdbcType=VARCHAR}
+    </select>
+    <insert id="insert" parameterType="com.bn.persistence.RoleDO">
+        INSERT INTO `role` (id, name, description, created_time, created_by, updated_time, updated_by)
+        VALUES (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{createdTime,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=VARCHAR}, #{updatedTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=VARCHAR})
+    </insert>
+</mapper>
