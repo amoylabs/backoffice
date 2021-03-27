@@ -2,6 +2,7 @@ package com.bn.service.impl;
 
 import com.bn.domain.Realm;
 import com.bn.domain.Role;
+import com.bn.domain.RoleRealmSetting;
 import com.bn.repository.RoleRepository;
 import com.bn.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,11 @@ public class RoleServiceImpl implements RoleService {
         Objects.requireNonNull(realm, "Realm should not be null to create");
         realm.initialize();
         return roleRepository.createRealm(realm, createdBy);
+    }
+
+    @Override
+    public void createRoleRealmsSetting(List<RoleRealmSetting> settings, String createdBy) {
+        roleRepository.createRoleRealmsSetting(settings, createdBy);
     }
 
     @Autowired

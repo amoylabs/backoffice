@@ -45,7 +45,7 @@ public class UserController {
     }
 
     @PostMapping
-    @UserAuthorizationRequired("admin")
+    @UserAuthorizationRequired("ADMIN")
     @ResponseStatus(HttpStatus.CREATED)
     public Long createUser(@Valid @RequestBody CreateUserRequest request) {
         log.info("Create user - {}", request.getMobilePhone());

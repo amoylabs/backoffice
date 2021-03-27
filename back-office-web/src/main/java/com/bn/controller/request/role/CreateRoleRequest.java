@@ -1,4 +1,4 @@
-package com.bn.controller.request;
+package com.bn.controller.request.role;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -14,12 +14,12 @@ import javax.validation.constraints.NotBlank;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateRealmRequest {
+public class CreateRoleRequest {
     @JsonProperty("name")
-    @NotBlank(message = "realm name is required")
+    @NotBlank(message = "role name is required")
     private String name;
 
     @JsonProperty("description")
-    @NotBlank(message = "realm description is required")
+    @NotBlank(message = "role description is required")
     private String description;
 }

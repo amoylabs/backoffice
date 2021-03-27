@@ -3,12 +3,14 @@ package com.bn.controller;
 import com.bn.authorization.UserAuthorizationRequired;
 import com.bn.authorization.UserRealm;
 import com.bn.authorization.UserRealmContextHolder;
-import com.bn.controller.request.CreateRealmRequest;
-import com.bn.controller.request.CreateRoleRequest;
-import com.bn.controller.response.RealmVO;
-import com.bn.controller.response.RoleVO;
+import com.bn.controller.request.role.CreateRealmRequest;
+import com.bn.controller.request.role.CreateRoleRealmRequest;
+import com.bn.controller.request.role.CreateRoleRequest;
+import com.bn.controller.response.role.RealmVO;
+import com.bn.controller.response.role.RoleVO;
 import com.bn.domain.Realm;
 import com.bn.domain.Role;
+import com.bn.domain.RoleRealmSetting;
 import com.bn.service.RoleService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +43,7 @@ public class RoleController {
     }
 
     @PostMapping
-    @UserAuthorizationRequired("admin")
+    @UserAuthorizationRequired("ADMIN")
     @ResponseStatus(HttpStatus.CREATED)
     public String createRole(@Valid @RequestBody CreateRoleRequest request) {
         Role role = Role.builder().name(request.getName()).description(request.getDescription()).build();
@@ -59,12 +61,24 @@ public class RoleController {
     }
 
     @PostMapping("realms")
-    @UserAuthorizationRequired("admin")
+    @UserAuthorizationRequired("ADMIN")
     @ResponseStatus(HttpStatus.CREATED)
     public String createRealm(@Valid @RequestBody CreateRealmRequest request) {
         Realm realm = Realm.builder().name(request.getName()).description(request.getDescription()).build();
         UserRealm context = Objects.requireNonNull(UserRealmContextHolder.get());
         return roleService.createRealm(realm, context.getUserName());
+    }
+
+    @PostMapping("realms-setting")
+    @UserAuthorizationRequired("ADMIN")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createRoleRealmsSetting(@Valid @RequestBody CreateRoleRealmRequest request) {
+        List<RoleRealmSetting> settings = request.getRoleRealms().stream().map(roleRealm -> {
+            List<Realm> realms = roleRealm.getRealmIds().stream().map(realmId -> Realm.builder().id(realmId).build()).collect(Collectors.toList());
+            return RoleRealmSetting.builder().role(Role.builder().id(roleRealm.getRoleId()).build()).realms(realms).build();
+        }).collect(Collectors.toList());
+        UserRealm context = Objects.requireNonNull(UserRealmContextHolder.get());
+        roleService.createRoleRealmsSetting(settings, context.getUserName());
     }
 
     @Autowired

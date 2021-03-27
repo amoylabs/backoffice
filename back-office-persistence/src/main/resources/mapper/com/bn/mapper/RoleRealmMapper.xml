@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bn.mapper.RoleRealmMapper">
+    <resultMap id="BaseResultMap" type="com.bn.persistence.RoleRealmDO">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="role_id" jdbcType="VARCHAR" property="roleId"/>
+        <result column="realm_id" jdbcType="VARCHAR" property="realmId"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="created_by" jdbcType="VARCHAR" property="createdBy"/>
+    </resultMap>
+    <sql id="Base_Column_List">id, role_id, realm_id, created_time, created_by</sql>
+    <select id="list" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM role_realm
+    </select>
+    <select id="selectByRoleId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM role_realm
+        WHERE role_id = #{role_id,jdbcType=VARCHAR}
+    </select>
+    <insert id="insert" parameterType="com.bn.persistence.RoleRealmDO">
+        INSERT INTO `role_realm` (id, role_id, realm_id, created_time, created_by)
+        VALUES (#{id,jdbcType=VARCHAR}, #{roleId,jdbcType=VARCHAR}, #{realmId,jdbcType=VARCHAR}, #{createdTime,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=VARCHAR})
+    </insert>
+</mapper>
