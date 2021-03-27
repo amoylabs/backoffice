@@ -20,6 +20,7 @@ def junit5Version = '5.3.1'
 def mysqlConnectorVersion = '8.0.22'
 def mybatisStarterVersion = '2.1.4'
 def jMapperVersion = '1.6.1.CR2'
+def micrometerVersion = '1.6.5'
 
 // To customize a managed version of SLF4J which is controlled by the slf4j.version property
 ext['slf4j.version'] = '1.7.20'
@@ -114,6 +115,7 @@ project(':back-office-web') {
         implementation 'org.springframework.boot:spring-boot-starter-undertow'
         implementation "org.mybatis.spring.boot:mybatis-spring-boot-starter:${mybatisStarterVersion}"
         implementation "com.googlecode.jmapper-framework:jmapper-core:${jMapperVersion}"
+        implementation "io.micrometer:micrometer-registry-prometheus:${micrometerVersion}"
         testImplementation('org.springframework.boot:spring-boot-starter-test') {
             exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
         }

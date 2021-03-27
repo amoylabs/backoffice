@@ -9,4 +9,6 @@ management:
   endpoints:
     web:
       exposure:
-        include: "info, health, beans, caches, env, httptrace, mappings, heapdump, threaddump"
+        include: "info, health, beans, caches, env, httptrace, mappings, heapdump, threaddump, prometheus"
+    health:
+      show-details: ALWAYS
