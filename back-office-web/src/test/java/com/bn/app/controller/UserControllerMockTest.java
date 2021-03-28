@@ -1,13 +1,13 @@
 package com.bn.app.controller;
 
-import com.bn.controller.UserController;
 import com.bn.controller.request.CreateUserRequest;
 import com.bn.domain.User;
 import com.bn.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -21,7 +21,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(UserController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 public class UserControllerMockTest {
     @Autowired
     private MockMvc mockMvc;
@@ -32,7 +33,7 @@ public class UserControllerMockTest {
 
     @Test
     public void createUser() throws Exception {
-        Long result = 1L;
+        User result = User.builder().id(1L).build();
         when(userService.create(any(User.class))).thenReturn(result);
         CreateUserRequest request = CreateUserRequest.builder()
             .name("test")
@@ -43,12 +44,14 @@ public class UserControllerMockTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(request));
         ResultMatcher success = status().isOk();
-        ResultMatcher body = content().string(result.toString());
+        ResultMatcher body = content().string(result.getId().toString());
         mockMvc.perform(builder).andDo(print()).andExpect(success).andExpect(body);
     }
 
     @Test
     public void createUserWithoutPassword() throws Exception {
+        User result = User.builder().id(1L).build();
+        when(userService.create(any(User.class))).thenReturn(result);
         CreateUserRequest request = CreateUserRequest.builder().mobilePhone("12333222332").name("").build();
         MockHttpServletRequestBuilder builder = post("/v1/users")
             .contentType(MediaType.APPLICATION_JSON)

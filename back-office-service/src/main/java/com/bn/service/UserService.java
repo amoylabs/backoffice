@@ -2,8 +2,10 @@ package com.bn.service;
 
 import com.bn.domain.User;
 
-public interface UserService {
-    Long create(User user);
+import java.util.Optional;
 
-    User get(Long id);
+public interface UserService {
+    User create(User user);
+
+    Optional<User> get(Long id);
 }

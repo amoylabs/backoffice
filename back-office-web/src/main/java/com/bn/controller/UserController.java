@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.Optional;
 
 @RequestMapping("v1/users")
 @RestController
@@ -24,17 +25,20 @@ public class UserController {
     @GetMapping("{id}")
     public User getUser(@NotNull @PathVariable Long id) {
         log.info("Get user - {}", id);
-        return userService.get(id);
+        Optional<User> user = userService.get(id);
+        return user.get();
     }
 
     @PostMapping
     public Long createUser(@Valid @RequestBody CreateUserRequest request) {
         log.info("Create user - {}", request.getMobilePhone());
         User user = User.builder()
+            .name(request.getName())
             .mobilePhone(request.getMobilePhone())
             .password(request.getPassword())
             .build();
-        return userService.create(user);
+        User savedUser = userService.create(user);
+        return savedUser.getId();
     }
 
     @Autowired
