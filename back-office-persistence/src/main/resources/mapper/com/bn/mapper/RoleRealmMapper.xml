@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bn.mapper.RoleRealmMapper">
+    <resultMap id="BaseResultMap" type="com.bn.persistence.RoleRealmDO">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="role_id" jdbcType="VARCHAR" property="roleId"/>
+        <result column="realm_id" jdbcType="VARCHAR" property="realmId"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="created_by" jdbcType="VARCHAR" property="createdBy"/>
+    </resultMap>
+    <insert id="insert" parameterType="com.bn.persistence.RoleRealmDO">
+        INSERT INTO `role_realm` (id, role_id, realm_id, created_time, created_by)
+        VALUES (#{id,jdbcType=VARCHAR}, #{roleId,jdbcType=VARCHAR}, #{realmId,jdbcType=VARCHAR}, #{createdTime,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=VARCHAR})
+    </insert>
+    <delete id="deleteByRoleId" parameterType="java.lang.String">
+        DELETE
+        FROM role_realm
+        WHERE role_id = #{role_id,jdbcType=VARCHAR}
+    </delete>
+    <resultMap id="ViewResultMap" type="com.bn.persistence.RoleRealmView">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="role_id" jdbcType="VARCHAR" property="roleId"/>
+        <result column="role_name" jdbcType="VARCHAR" property="roleName"/>
+        <result column="realm_id" jdbcType="VARCHAR" property="realmId"/>
+        <result column="realm_name" jdbcType="VARCHAR" property="realmName"/>
+    </resultMap>
+    <select id="selectByRoleId" parameterType="java.lang.String" resultMap="ViewResultMap">
+        SELECT
+            r1.id, r1.role_id, r2.`name` AS role_name, r1.realm_id, r3.`name` AS realm_name
+        FROM
+            role_realm r1
+            JOIN role r2 ON r1.role_id = r2.id
+            JOIN realm r3 ON r1.realm_id = r3.id
+        WHERE r1.role_id = #{role_id,jdbcType=VARCHAR}
+    </select>
+</mapper>

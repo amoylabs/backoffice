@@ -7,5 +7,7 @@ import org.springframework.stereotype.Repository;
 public interface UserMapper {
     UserDO selectByPrimaryKey(Long id);
 
-    void insert(UserDO userDO);
+    UserDO selectByName(String name);
+
+    void insert(UserDO user);
 }

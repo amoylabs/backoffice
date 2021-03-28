@@ -1,12 +1,14 @@
-package com.bn.web;
+package com.bn.web.handler;
 
 import com.bn.exception.ErrorCode;
 import com.bn.exception.ErrorSeverity;
+import com.bn.web.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -32,17 +34,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 handleWarningRequestInfoLogging(ex, request);
             }
 
-            ErrorResponse error = new ErrorResponse(errorCode.getErrorCode(), List.of(ex.getLocalizedMessage()));
+            ErrorResponse error = new ErrorResponse(errorCode.getErrorCode(), List.of(toSafeExceptionMessage(ex)));
             ResponseStatus status = ex.getClass().getAnnotation(ResponseStatus.class);
             return new ResponseEntity<>(error, status.value());
         }
 
         handleRequestInfoErrorLogging(ex, request);
-        ErrorResponse error = new ErrorResponse(ErrorCode.SERVER_ERROR, List.of(ex.getLocalizedMessage()));
+        ErrorResponse error = new ErrorResponse(ErrorCode.SERVER_ERROR, List.of(toSafeExceptionMessage(ex)));
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @Override
+    @NonNull
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         List<String> details = ex.getBindingResult().getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.toList());
         ErrorResponse error = new ErrorResponse(ErrorCode.VALIDATION_ERROR, details);
@@ -53,10 +56,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         if (webRequest instanceof ServletWebRequest) {
             ServletWebRequest servletWebRequest = (ServletWebRequest) webRequest;
             HttpServletRequest request = servletWebRequest.getRequest();
-            log.error("{}:{} : {}", request.getMethod(), request.getRequestURI(), ex.getLocalizedMessage());
+            log.error("{}:{} : {}", request.getMethod(), request.getRequestURI(), toSafeExceptionMessage(ex));
             // Map<String, String[]> parameters = request.getParameterMap();
             // log.error("Request Parameters：{}", JSONUtil.toJsonStr(parameters));
-            log.error(ex.getLocalizedMessage(), ex);
+            log.error(toSafeExceptionMessage(ex), ex);
         }
     }
 
@@ -64,8 +67,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         if (webRequest instanceof ServletWebRequest) {
             ServletWebRequest servletWebRequest = (ServletWebRequest) webRequest;
             HttpServletRequest request = servletWebRequest.getRequest();
-            log.warn("{}:{} : {}", request.getMethod(), request.getRequestURI(), ex.getLocalizedMessage());
-            log.warn(ex.getLocalizedMessage(), ex);
+            log.warn("{}:{} : {}", request.getMethod(), request.getRequestURI(), toSafeExceptionMessage(ex));
+            log.warn(toSafeExceptionMessage(ex), ex);
         }
+    }
+
+    private String toSafeExceptionMessage(Exception ex) {
+        String message = ex.getLocalizedMessage() == null ? ex.getMessage() : ex.getLocalizedMessage();
+        return message == null ? "UNKNOWN" : message;
     }
 }
