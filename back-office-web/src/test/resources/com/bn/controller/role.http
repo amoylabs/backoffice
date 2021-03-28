@@ -28,7 +28,7 @@ Authorization: Bear eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJKV1MgLSBIQUN
 ### get realm list
 GET http://localhost:8080/v1/roles/realms
 
-### get realm list
+### get realm list for specified role
 GET http://localhost:8080/v1/roles/b06/realms
 
 ### create role realm setting

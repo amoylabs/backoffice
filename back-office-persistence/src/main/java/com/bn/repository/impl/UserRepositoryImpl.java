@@ -30,7 +30,7 @@ public class UserRepositoryImpl implements UserRepository {
     public Long save(User user, String createdBy) {
         UserDO existingUser = userMapper.selectByName(user.getName());
         if (existingUser != null) {
-            throw new ConflictException("user is existing - " + user.getName());
+            throw new ConflictException("conflicting user - " + user.getName());
         }
 
         UserDO userDO = UserBuilder.fromDomain(user);

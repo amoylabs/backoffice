@@ -4,6 +4,7 @@ import com.bn.domain.Realm;
 import com.bn.domain.Role;
 import com.bn.domain.RoleRealmSetting;
 import com.bn.exception.ConflictException;
+import com.bn.exception.ResourceNotFoundException;
 import com.bn.mapper.RealmMapper;
 import com.bn.mapper.RoleMapper;
 import com.bn.mapper.RoleRealmMapper;
@@ -45,7 +46,7 @@ public class RoleRepositoryImpl implements RoleRepository {
     public String createRole(Role role, String createdBy) {
         RoleDO existingRole = roleMapper.selectByName(role.getName());
         if (existingRole != null) {
-            throw new ConflictException("role is existing - " + role.getName());
+            throw new ConflictException("conflicting role - " + role.getName());
         }
 
         RoleDO roleDO = RoleDO.builder()
@@ -73,7 +74,7 @@ public class RoleRepositoryImpl implements RoleRepository {
     public String createRealm(Realm realm, String createdBy) {
         RealmDO existingRealm = realmMapper.selectByName(realm.getName());
         if (existingRealm != null) {
-            throw new ConflictException("realm is existing - " + realm.getName());
+            throw new ConflictException("conflicting realm - " + realm.getName());
         }
 
         RealmDO realmDO = RealmDO.builder()
@@ -91,7 +92,7 @@ public class RoleRepositoryImpl implements RoleRepository {
     public RoleRealmSetting getRealms4Role(String roleId) {
         RoleDO existingRole = roleMapper.selectById(roleId);
         if (existingRole == null) {
-            throw new ConflictException("role is NOT existing - " + roleId);
+            throw new ResourceNotFoundException("role not found - " + roleId);
         }
 
         List<RoleRealmView> results = roleRealmMapper.selectByRoleId(roleId);
