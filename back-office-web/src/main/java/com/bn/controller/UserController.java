@@ -5,7 +5,7 @@ import com.bn.authorization.UserAuthorizationRequired;
 import com.bn.authorization.UserRealm;
 import com.bn.authorization.UserRealmContextHolder;
 import com.bn.controller.request.CreateUserRequest;
-import com.bn.controller.response.UserVO;
+import com.bn.controller.response.GetUserResponse;
 import com.bn.domain.User;
 import com.bn.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -32,10 +32,10 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("{id}")
-    public UserVO getUser(@NotNull @PathVariable Long id) {
+    public GetUserResponse getUser(@NotNull @PathVariable Long id) {
         log.info("Get user - {}", id);
         User user = userService.get(id);
-        return UserVO.builder()
+        return GetUserResponse.builder()
             .id(user.getId())
             .name(user.getName())
             .email(user.getEmail())

@@ -40,8 +40,13 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public void createRoleRealmsSetting(List<RoleRealmSetting> settings, String createdBy) {
-        roleRepository.createRoleRealmsSetting(settings, createdBy);
+    public RoleRealmSetting getRealms4Role(String roleId) {
+        return roleRepository.getRealms4Role(roleId);
+    }
+
+    @Override
+    public void saveOrUpdateRoleRealmsSettings(List<RoleRealmSetting> settings, String createdBy) {
+        roleRepository.saveOrUpdateRoleRealmsSettings(settings, createdBy);
     }
 
     @Autowired

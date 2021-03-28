@@ -10,6 +10,7 @@ import com.bn.mapper.RoleRealmMapper;
 import com.bn.persistence.RealmDO;
 import com.bn.persistence.RoleDO;
 import com.bn.persistence.RoleRealmDO;
+import com.bn.persistence.RoleRealmView;
 import com.bn.repository.RoleRepository;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
@@ -19,7 +20,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 public class RoleRepositoryImpl implements RoleRepository {
     private RoleMapper roleMapper;
     private RealmMapper realmMapper;
-    // private RoleRealmMapper roleRealmMapper;
+    private RoleRealmMapper roleRealmMapper;
     private SqlSessionFactory sqlSessionFactory;
 
     @Override
@@ -88,40 +88,54 @@ public class RoleRepositoryImpl implements RoleRepository {
     }
 
     @Override
+    public RoleRealmSetting getRealms4Role(String roleId) {
+        RoleDO existingRole = roleMapper.selectById(roleId);
+        if (existingRole == null) {
+            throw new ConflictException("role is NOT existing - " + roleId);
+        }
+
+        List<RoleRealmView> results = roleRealmMapper.selectByRoleId(roleId);
+        if (results == null || results.isEmpty()) {
+            return RoleRealmSetting.builder().build();
+        }
+
+        // all records will belong to one role so that it's safe to get the role from the first record
+        return RoleRealmSetting.builder()
+            .role(Role.builder().id(results.get(0).getRoleId()).name(results.get(0).getRoleName()).build())
+            .realms(results.stream().map(view -> Realm.builder().id(view.getRealmId()).name(view.getRealmName()).build()).collect(Collectors.toList())).build();
+    }
+
+    @Override
     @Transactional
-    public void createRoleRealmsSetting(List<RoleRealmSetting> settings, String createdBy) {
-        // if (settings == null || settings.isEmpty()) {
-        //     throw new BadRequest()
-        // }
-        List<RoleRealmDO> roleRealmDOList = settings.stream()
-            .map(RoleRealmSetting::transform2OneByOne)
-            .reduce(new ArrayList<>(), (memo, subList) -> {
-                memo.addAll(subList);
-                return memo;
-            })
-            .stream()
-            .map(pair -> RoleRealmDO.builder()
-                .id(UUID.randomUUID().toString())
-                .roleId(pair.getValue0().getId())
-                .realmId(pair.getValue1().getId())
-                .createdTime(ZonedDateTime.now())
-                .createdBy(createdBy)
-                .build())
-            .collect(Collectors.toList());
+    public void saveOrUpdateRoleRealmsSettings(List<RoleRealmSetting> settings, String createdBy) {
         try (SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH)) {
             RoleRealmMapper mapper = sqlSession.getMapper(RoleRealmMapper.class);
-            int size = roleRealmDOList.size();
-            int idx = 0;
-            while (idx < size) {
-                mapper.insert(roleRealmDOList.get(idx));
-                idx++;
-                if (idx % 10 == 0 || idx == size) {
-                    sqlSession.flushStatements();
-                    sqlSession.clearCache();
+            for (RoleRealmSetting setting : settings) {
+                List<RoleRealmDO> roleRealmDOList = convertToRoleRealmDO(setting, createdBy);
+                mapper.deleteByRoleId(setting.getRole().getId()); // clear all existing data before re-create
+                int size = roleRealmDOList.size();
+                int idx = 0;
+                while (idx < size) {
+                    mapper.insert(roleRealmDOList.get(idx));
+                    idx++;
+                    if (idx % 10 == 0 || idx == size) {
+                        sqlSession.flushStatements();
+                        sqlSession.clearCache();
+                    }
                 }
             }
             sqlSession.commit();
         }
+    }
+
+    private List<RoleRealmDO> convertToRoleRealmDO(RoleRealmSetting setting, String createdBy) {
+        return setting.getRealms().stream().map(realm -> RoleRealmDO.builder()
+            .id(UUID.randomUUID().toString())
+            .roleId(setting.getRole().getId())
+            .realmId(realm.getId())
+            .createdTime(ZonedDateTime.now())
+            .createdBy(createdBy)
+            .build()).collect(Collectors.toList());
     }
 
     @Autowired
@@ -134,10 +148,10 @@ public class RoleRepositoryImpl implements RoleRepository {
         this.realmMapper = realmMapper;
     }
 
-    // @Autowired
-    // public void setRoleRealmMapper(RoleRealmMapper roleRealmMapper) {
-    //     this.roleRealmMapper = roleRealmMapper;
-    // }
+    @Autowired
+    public void setRoleRealmMapper(RoleRealmMapper roleRealmMapper) {
+        this.roleRealmMapper = roleRealmMapper;
+    }
 
     @Autowired
     public void setSqlSessionFactory(SqlSessionFactory sqlSessionFactory) {

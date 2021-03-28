@@ -15,5 +15,7 @@ public interface RoleService {
 
     String createRealm(Realm realm, String createdBy);
 
-    void createRoleRealmsSetting(List<RoleRealmSetting> settings, String createdBy);
+    RoleRealmSetting getRealms4Role(String roleId);
+
+    void saveOrUpdateRoleRealmsSettings(List<RoleRealmSetting> settings, String createdBy);
 }

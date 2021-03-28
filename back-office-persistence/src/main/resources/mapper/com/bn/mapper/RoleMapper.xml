@@ -16,6 +16,12 @@
         <include refid="Base_Column_List"/>
         FROM role
     </select>
+    <select id="selectById" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM role
+        WHERE id = #{id,jdbcType=VARCHAR}
+    </select>
     <select id="selectByName" parameterType="java.lang.String" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>

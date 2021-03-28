@@ -1,7 +1,7 @@
 package com.bn.mapper;
 
-import com.bn.persistence.RealmDO;
 import com.bn.persistence.RoleRealmDO;
+import com.bn.persistence.RoleRealmView;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.List;
 public interface RoleRealmMapper {
     void insert(RoleRealmDO roleRealm);
 
-    List<RoleRealmDO> list();
+    List<RoleRealmView> selectByRoleId(String roleId);
 
-    RealmDO selectByRoleId(String roleId);
+    void deleteByRoleId(String roleId);
 }

@@ -11,5 +11,7 @@ public interface RoleMapper {
 
     RoleDO selectByName(String name);
 
+    RoleDO selectById(String id);
+
     void insert(RoleDO role);
 }
