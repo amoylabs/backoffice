@@ -11,7 +11,7 @@ import com.bn.controller.response.role.ListRealmsResponse;
 import com.bn.controller.response.role.ListRolesResponse;
 import com.bn.domain.Realm;
 import com.bn.domain.Role;
-import com.bn.domain.RoleRealmSetting;
+import com.bn.service.RealmService;
 import com.bn.service.RoleService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +35,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class RoleController {
     private RoleService roleService;
+    private RealmService realmService;
 
     @GetMapping
     public ListRolesResponse listRoles() {
@@ -75,10 +76,9 @@ public class RoleController {
     }
 
     @GetMapping("{id}/realms")
-    public GetRoleRealmsResponse getRealms4Role(@NotEmpty @PathVariable String id) {
-        RoleRealmSetting setting = roleService.getRealms4Role(id);
-        Role role = setting.getRole();
-        List<GetRoleRealmsResponse.RealmVO> realmViews = setting.getRealms().stream()
+    public GetRoleRealmsResponse getRealms4Role(@NotEmpty @PathVariable Long id) {
+        Role role = roleService.loadRole(id);
+        List<GetRoleRealmsResponse.RealmVO> realmViews = role.getRealms().stream()
             .map(realm -> GetRoleRealmsResponse.RealmVO.builder().id(realm.getId()).name(realm.getName()).build()).collect(Collectors.toList());
         return GetRoleRealmsResponse.builder()
             .roleId(role.getId())
@@ -90,16 +90,22 @@ public class RoleController {
     @PostMapping("realm-settings")
     @UserAuthorizationRequired("ADMIN")
     public void saveOrUpdateRoleRealmsSettings(@Valid @RequestBody CreateRoleRealmRequest request) {
-        List<RoleRealmSetting> settings = request.getRoleRealms().stream().map(roleRealm -> {
-            List<Realm> realms = roleRealm.getRealmIds().stream().map(realmId -> Realm.builder().id(realmId).build()).collect(Collectors.toList());
-            return RoleRealmSetting.builder().role(Role.builder().id(roleRealm.getRoleId()).build()).realms(realms).build();
+        List<Role> roles = request.getRoleRealms().stream().map(roleRealm -> {
+            Role role = roleService.loadRole(roleRealm.getRoleId());
+            List<Realm> realms = realmService.listRealmsByIds(roleRealm.getRealmIds());
+            role.setRealms(realms);
+            return role;
         }).collect(Collectors.toList());
         UserRealm context = Objects.requireNonNull(UserRealmContextHolder.get());
-        roleService.saveOrUpdateRoleRealmsSettings(settings, context.getUserName());
+        roleService.updateRoles(roles, context.getUserName());
     }
 
     @Autowired
     public void setRoleService(RoleService roleService) {
         this.roleService = roleService;
+    }
+
+    public void setRealmService(RealmService realmService) {
+        this.realmService = realmService;
     }
 }

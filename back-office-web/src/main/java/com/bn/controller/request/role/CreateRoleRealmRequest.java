@@ -32,11 +32,11 @@ public class CreateRoleRealmRequest {
     public static class RoleRealm {
         @JsonProperty("role_id")
         @NotBlank(message = "role is required")
-        private String roleId;
+        private Long roleId;
 
         @JsonProperty("realm_ids")
         @NotNull(message = "realms are required")
         @Size(min = 1, message = "realms are required")
-        private List<String> realmIds;
+        private List<Long> realmIds;
     }
 }
