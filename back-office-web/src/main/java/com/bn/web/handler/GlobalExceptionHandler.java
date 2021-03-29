@@ -18,6 +18,8 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,6 +46,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(ConstraintViolationException.class)
+    public final ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException ex) {
+        List<String> details = ex.getConstraintViolations().stream().map(ConstraintViolation::getMessage).collect(Collectors.toList());
+        ErrorResponse apiError = new ErrorResponse(ErrorCode.VALIDATION_ERROR, details);
+        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+    }
+
     @Override
     @NonNull
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
@@ -57,8 +66,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             ServletWebRequest servletWebRequest = (ServletWebRequest) webRequest;
             HttpServletRequest request = servletWebRequest.getRequest();
             log.error("{}:{} : {}", request.getMethod(), request.getRequestURI(), toSafeExceptionMessage(ex));
-            // Map<String, String[]> parameters = request.getParameterMap();
-            // log.error("Request Parameters：{}", JSONUtil.toJsonStr(parameters));
             log.error(toSafeExceptionMessage(ex), ex);
         }
     }

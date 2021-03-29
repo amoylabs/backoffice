@@ -15,5 +15,5 @@ Authorization: Bear eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJKV1MgLSBIQUN
 }
 
 ### get user info
-GET http://localhost:8080/v1/users/3
+GET http://localhost:8080/v1/users/xxx
 
