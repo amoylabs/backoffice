@@ -13,9 +13,11 @@ import com.bn.domain.Realm;
 import com.bn.domain.Role;
 import com.bn.domain.RoleRealmSetting;
 import com.bn.service.RoleService;
+import com.bn.web.validation.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,7 +27,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -33,6 +34,7 @@ import java.util.stream.Collectors;
 @RequestMapping("v1/roles")
 @RestController
 @Slf4j
+@Validated
 public class RoleController {
     private RoleService roleService;
 
@@ -75,7 +77,7 @@ public class RoleController {
     }
 
     @GetMapping("{id}/realms")
-    public GetRoleRealmsResponse getRealms4Role(@NotEmpty @PathVariable String id) {
+    public GetRoleRealmsResponse getRealms4Role(@PathVariable @UUID String id) {
         RoleRealmSetting setting = roleService.getRealms4Role(id);
         Role role = setting.getRole();
         List<GetRoleRealmsResponse.RealmVO> realmViews = setting.getRealms().stream()
