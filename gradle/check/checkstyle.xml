@@ -120,7 +120,7 @@
 
         <!--Size Violations:-->
         <module name="AnonInnerLength">             <!--Checks for long anonymous inner classes.-->
-            <property name="max" value="15"/>
+            <property name="max" value="20"/>
         </module>
         <module name="ExecutableStatementCount">    <!--Restricts the number of executable statements to a specified limit-->
             <property name="max" value="40"/>

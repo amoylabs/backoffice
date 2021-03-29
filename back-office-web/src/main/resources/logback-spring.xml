@@ -8,7 +8,7 @@
         </filter>
         <encoder>
             <!--<pattern>%date [%thread] %-5level [%logger{50}] %file:%line - %msg%n</pattern>-->
-            <pattern>%d{yyyy-MM-dd HH:mm:ss,SSS} %highlight(%-5level) %magenta(${PID:-}) %white(-) %-20(%yellow([%thread])) %-55(%cyan(%.32logger{50}:%L)) %highlight(- %msg%n)</pattern>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss,SSS} %highlight(%-5level) %magenta(${PID:-}) %white(-) %-20(%yellow([%thread])) %green(%X{requestId}) %-55(%cyan(%.32logger{50}:%L)) %highlight(- %msg%n)</pattern>
             <charset>UTF-8</charset>
         </encoder>
     </appender>
@@ -50,7 +50,7 @@
             <!--</triggeringPolicy>-->
             <encoder>
                 <!--<pattern>%date [%thread] %-5level [%logger{50}] %file:%line - %msg%n</pattern>-->
-                <pattern>%d{"yyyy-MM-dd HH:mm:ss,SSS"} [%thread] [%c{0}-%M:%line] %m%n</pattern>
+                <pattern>%d{"yyyy-MM-dd HH:mm:ss,SSS"} [%thread] %X{requestId} [%c{0}-%M:%line] %m%n</pattern>
                 <charset>UTF-8</charset> <!-- 此处设置字符集 -->
             </encoder>
         </appender>
@@ -75,7 +75,7 @@
             </rollingPolicy>
             <encoder>
                 <!--<pattern>%date [%thread] %-5level [%logger{50}] %file:%line - %msg%n</pattern>-->
-                <pattern>%d{"yyyy-MM-dd HH:mm:ss,SSS"} [%thread] [%c{0}-%M:%line] %m%n</pattern>
+                <pattern>%d{"yyyy-MM-dd HH:mm:ss,SSS"} [%thread] %X{requestId} [%c{0}-%M:%line] %m%n</pattern>
                 <charset>UTF-8</charset> <!-- 此处设置字符集 -->
             </encoder>
         </appender>
