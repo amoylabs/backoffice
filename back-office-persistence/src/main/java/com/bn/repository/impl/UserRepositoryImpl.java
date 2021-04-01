@@ -2,7 +2,7 @@ package com.bn.repository.impl;
 
 import com.bn.domain.User;
 import com.bn.exception.ConflictException;
-import com.bn.exception.ResourceNotFoundException;
+import com.bn.exception.NotFoundException;
 import com.bn.mapper.UserMapper;
 import com.bn.persistence.UserBuilder;
 import com.bn.persistence.UserDO;
@@ -20,7 +20,7 @@ public class UserRepositoryImpl implements UserRepository {
     public User get(Long id) {
         UserDO userDO = userMapper.selectByPrimaryKey(id);
         if (userDO == null) {
-            throw new ResourceNotFoundException("user not found - " + id);
+            throw new NotFoundException("user not found - " + id);
         }
 
         return UserBuilder.fromDO(userDO);

@@ -4,6 +4,8 @@ spring:
     jdbcUrl: jdbc:mysql://localhost:3306/main
     username: dev
     password: dev
+  redis:
+    url: redis://localhost:6379
 
 management:
   endpoints:

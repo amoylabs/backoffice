@@ -21,6 +21,7 @@ def mysqlConnectorVersion = '8.0.22'
 def mybatisStarterVersion = '2.1.4'
 def jMapperVersion = '1.6.1.CR2'
 def micrometerVersion = '1.6.5'
+def lettuceVersion = '6.1.0.RELEASE'
 
 // To customize a managed version of SLF4J which is controlled by the slf4j.version property
 ext['slf4j.version'] = '1.7.20'
@@ -85,7 +86,8 @@ project(':back-office-persistence') {
         implementation project(':back-office-domain')
         implementation 'org.springframework.boot:spring-boot-starter'
         // implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
-        // implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+        implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+        implementation "io.lettuce:lettuce-core:${lettuceVersion}"
         implementation "org.mybatis.spring.boot:mybatis-spring-boot-starter:${mybatisStarterVersion}"
         implementation "com.googlecode.jmapper-framework:jmapper-core:${jMapperVersion}"
         runtimeOnly "mysql:mysql-connector-java:${mysqlConnectorVersion}"

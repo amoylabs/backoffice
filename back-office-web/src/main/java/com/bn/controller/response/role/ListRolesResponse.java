@@ -1,20 +1,20 @@
 package com.bn.controller.response.role;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Value;
 
 import java.util.List;
 
-@Data
+@Value
 @Builder
 public class ListRolesResponse {
-    private List<RoleVO> roles;
+    List<RoleVO> roles;
 
-    @Data
+    @Value
     @Builder
     public static class RoleVO {
-        private String id;
-        private String name;
-        private String description;
+        String id;
+        String name;
+        String description;
     }
 }
