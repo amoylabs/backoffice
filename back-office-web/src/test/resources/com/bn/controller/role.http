@@ -2,10 +2,12 @@
 POST http://localhost:8080/v1/users/auth/hack
 Content-Type: application/json
 
+> {% client.global.set("auth_token", response.body); %}
+
 ### create roles
 POST http://localhost:8080/v1/roles
 Content-Type: application/json
-Authorization: Bear eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJKV1MgLSBIQUNLIiwicmVhbG0iOnsicmVhbG1zIjpbInN1cGVyIl0sInVzZXJOYW1lIjoiSEFDSyIsInVzZXJJZCI6Ii0yMzM2NDE0OTQ1MDgwMzgxMzAzIn0sImV4cCI6MTYxNjk3MTE0NTc1NiwiaWF0IjoxNjE2OTQyMzQ1NzU2LCJqdGkiOiI5ZWE5ZmY3My00NWUwLTQ4MWYtOTA2Ny04ZTFiNDdkODkzZDUifQ.jICL2PBu-izbxVLzR-0StGLBevs1ovVjnMjzUggyVO0
+Authorization: Bear {{auth_token}}}}
 
 {
   "name": "THAT_ROLE",
@@ -18,10 +20,10 @@ GET http://localhost:8080/v1/roles
 ### create realm
 POST http://localhost:8080/v1/roles/realms
 Content-Type: application/json
-Authorization: Bear eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJKV1MgLSBIQUNLIiwicmVhbG0iOnsicmVhbG1zIjpbInN1cGVyIl0sInVzZXJOYW1lIjoiSEFDSyIsInVzZXJJZCI6Ii0yMzM2NDE0OTQ1MDgwMzgxMzAzIn0sImV4cCI6MTYxNjk3MTE0NTc1NiwiaWF0IjoxNjE2OTQyMzQ1NzU2LCJqdGkiOiI5ZWE5ZmY3My00NWUwLTQ4MWYtOTA2Ny04ZTFiNDdkODkzZDUifQ.jICL2PBu-izbxVLzR-0StGLBevs1ovVjnMjzUggyVO0
+Authorization: Bear {{auth_token}}}}
 
 {
-  "name": "G_REALM",
+  "name": "H_REALM",
   "description": "Realm for testing"
 }
 
@@ -34,17 +36,17 @@ GET http://localhost:8080/v1/roles/b06f57e9-acc6-40cc-a881/realms
 ### create role realm setting
 POST http://localhost:8080/v1/roles/realm-settings
 Content-Type: application/json
-Authorization: Bear eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJKV1MgLSBIQUNLIiwicmVhbG0iOnsicmVhbG1zIjpbInN1cGVyIl0sInVzZXJOYW1lIjoiSEFDSyIsInVzZXJJZCI6Ii0yMzM2NDE0OTQ1MDgwMzgxMzAzIn0sImV4cCI6MTYxNjk3MTE0NTc1NiwiaWF0IjoxNjE2OTQyMzQ1NzU2LCJqdGkiOiI5ZWE5ZmY3My00NWUwLTQ4MWYtOTA2Ny04ZTFiNDdkODkzZDUifQ.jICL2PBu-izbxVLzR-0StGLBevs1ovVjnMjzUggyVO0
+Authorization: Bear {{auth_token}}}}
 
 {
-  "role_realms": [
+  "roleRealms": [
     {
-      "role_id": "b06f57e9-acc6-40cc-a881-a6f8f8f71e00",
-      "realm_ids": ["1545ee91-9c81-4650-a2f1-09be16f4796e", "1cd030ae-b8a1-4578-93cf-e9e8e8d44f4f"]
+      "roleId": "b06f57e9-acc6-40cc-a881-a6f8f8f71e00",
+      "realmIds": ["1545ee91-9c81-4650-a2f1-09be16f4796e", "1cd030ae-b8a1-4578-93cf-e9e8e8d44f4f"]
     },
     {
-      "role_id": "98d69db0-4742-4bf8-96b7-7f50c3e23fd7",
-      "realm_ids": ["1545ee91-9c81-4650-a2f1-09be16f4796e", "1cd030ae-b8a1-4578-93cf-e9e8e8d44f4f"]
+      "roleId": "98d69db0-4742-4bf8-96b7-7f50c3e23fd7",
+      "realmIds": ["1545ee91-9c81-4650-a2f1-09be16f4796e", "1cd030ae-b8a1-4578-93cf-e9e8e8d44f4f"]
     }
   ]
 }

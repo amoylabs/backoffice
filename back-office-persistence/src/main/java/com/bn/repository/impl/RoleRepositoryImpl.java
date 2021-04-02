@@ -4,7 +4,7 @@ import com.bn.domain.Realm;
 import com.bn.domain.Role;
 import com.bn.domain.RoleRealmSetting;
 import com.bn.exception.ConflictException;
-import com.bn.exception.ResourceNotFoundException;
+import com.bn.exception.NotFoundException;
 import com.bn.mapper.RealmMapper;
 import com.bn.mapper.RoleMapper;
 import com.bn.mapper.RoleRealmMapper;
@@ -92,7 +92,7 @@ public class RoleRepositoryImpl implements RoleRepository {
     public RoleRealmSetting getRealms4Role(String roleId) {
         RoleDO existingRole = roleMapper.selectById(roleId);
         if (existingRole == null) {
-            throw new ResourceNotFoundException("role not found - " + roleId);
+            throw new NotFoundException("role not found - " + roleId);
         }
 
         List<RoleRealmView> results = roleRealmMapper.selectByRoleId(roleId);

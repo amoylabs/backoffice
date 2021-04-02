@@ -1,20 +1,20 @@
 package com.bn.controller.response.role;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Value;
 
 import java.util.List;
 
-@Data
+@Value
 @Builder
 public class ListRealmsResponse {
-    private List<RealmVO> roles;
+    List<RealmVO> roles;
 
-    @Data
+    @Value
     @Builder
     public static class RealmVO {
-        private String id;
-        private String name;
-        private String description;
+        String id;
+        String name;
+        String description;
     }
 }
