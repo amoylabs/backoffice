@@ -20,9 +20,10 @@ import java.util.concurrent.Callable;
  */
 @Component
 @Slf4j
-public class RedisDistributedLock implements DistributedLock {
+public class DistributedLockImpl implements DistributedLock {
     private static final int MAX_LOCK_CHECK_TIMES = 10;
-    private static final int MIN_CHECK_INTERVAL_MILLISECONDS = 1000;
+    private static final int MIN_CHECK_INTERVAL_MILLISECONDS = 500;
+    private static final int MAX_CHECK_INTERVAL_MILLISECONDS = 5_000;
 
     private StringRedisTemplate redisTemplate;
 
@@ -48,8 +49,8 @@ public class RedisDistributedLock implements DistributedLock {
 
             // Assuming it will take 10 times to check the lock at maximum
             // This will prevent too many requests to redis server
-            // The checking interval is set to 1000ms at minimum
-            long checkInterval = Math.max(waitTime.toMillis() / MAX_LOCK_CHECK_TIMES, MIN_CHECK_INTERVAL_MILLISECONDS);
+            // The checking interval is set to 0.5s at minimum and 5s at maximum
+            long checkInterval = Math.max(Math.min(waitTime.toMillis() / MAX_LOCK_CHECK_TIMES, MAX_CHECK_INTERVAL_MILLISECONDS), MIN_CHECK_INTERVAL_MILLISECONDS);
             try {
                 Thread.sleep(checkInterval);
             } catch (InterruptedException ex) {

@@ -4,7 +4,7 @@ import java.time.Duration;
 import java.util.Map;
 
 @SuppressWarnings("PMD.LinguisticNaming")
-public interface DistributedCache {
+public interface RedisCache {
     String get(String key);
 
     void set(String key, String value);

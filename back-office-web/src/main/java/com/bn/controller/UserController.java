@@ -59,6 +59,13 @@ public class UserController {
         return userService.create(user, context.getUserName());
     }
 
+    @PostMapping("async/test")
+    public void executeAsyncTask() {
+        log.info("Execute Async Task : {}", System.currentTimeMillis());
+        userService.doSthAsync();
+        log.info("End immediately : {}", System.currentTimeMillis());
+    }
+
     @PostMapping("auth/hack")
     public String authorize() {
         UserRealm auth = UserRealm.builder()

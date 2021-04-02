@@ -42,7 +42,10 @@ public class MDCFilter extends OncePerRequestFilter {
             log.info("IP:{}, Method:{}, URI:{}{}", clientIP, request.getMethod(), request.getRequestURI(), queryString);
             if (HttpMethod.POST.name().equals(request.getMethod())) {
                 MultiReadHttpServletRequest multiReadHttpServletRequest = new MultiReadHttpServletRequest(request);
-                log.info("Body:{}", multiReadHttpServletRequest.getRequestBody());
+                String bodyString = multiReadHttpServletRequest.getRequestBody();
+                if (StrUtil.isNotBlank(bodyString)) {
+                    log.info("Body:{}", bodyString);
+                }
                 chain.doFilter(multiReadHttpServletRequest, response);
             } else {
                 chain.doFilter(request, response);
