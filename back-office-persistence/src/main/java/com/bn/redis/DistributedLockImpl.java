@@ -20,7 +20,7 @@ import java.util.concurrent.Callable;
  */
 @Component
 @Slf4j
-public class RedisDistributedLock implements DistributedLock {
+public class DistributedLockImpl implements DistributedLock {
     private static final int MAX_LOCK_CHECK_TIMES = 10;
     private static final int MIN_CHECK_INTERVAL_MILLISECONDS = 1000;
 

@@ -11,7 +11,7 @@ import java.util.Map;
 
 @Component
 @SuppressWarnings("PMD.LinguisticNaming")
-public class RedisDistributedCache implements DistributedCache {
+public class RedisCacheImpl implements RedisCache {
     private StringRedisTemplate redisTemplate;
 
     @Override
