@@ -1,4 +1,4 @@
-package com.bn.web;
+package com.bn.app.config;
 
 import com.bn.authorization.UserAuthorizationInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
