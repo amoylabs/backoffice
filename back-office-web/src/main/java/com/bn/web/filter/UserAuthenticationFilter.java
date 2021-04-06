@@ -1,10 +1,10 @@
 package com.bn.web.filter;
 
 import cn.hutool.core.util.StrUtil;
-import com.bn.authorization.JWTProvider;
-import com.bn.authorization.UserAuthorization;
-import com.bn.authorization.UserRealm;
-import com.bn.authorization.UserRealmContextHolder;
+import com.bn.web.authorization.JWTProvider;
+import com.bn.web.authorization.UserAuthorization;
+import com.bn.web.authorization.UserRealm;
+import com.bn.web.authorization.UserRealmContextHolder;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;

@@ -1,0 +1,10 @@
+### user auth token
+GET http://localhost:8080/v1/token
+
+> {% client.global.set("api_token", response.body); %}
+
+
+
+### submit with token
+POST http://localhost:8080/v1/token
+Idempotent-Api-Token: {{api_token}}

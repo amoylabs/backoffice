@@ -1,8 +1,8 @@
 package com.bn.controller;
 
-import com.bn.authorization.UserAuthorizationRequired;
-import com.bn.authorization.UserRealm;
-import com.bn.authorization.UserRealmContextHolder;
+import com.bn.web.authorization.UserAuthorizationRequired;
+import com.bn.web.authorization.UserRealm;
+import com.bn.web.authorization.UserRealmContextHolder;
 import com.bn.controller.request.role.CreateRealmRequest;
 import com.bn.controller.request.role.CreateRoleRealmRequest;
 import com.bn.controller.request.role.CreateRoleRequest;

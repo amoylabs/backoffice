@@ -1,4 +1,4 @@
-package com.bn.authorization;
+package com.bn.web.authorization;
 
 import cn.hutool.core.util.ArrayUtil;
 import lombok.extern.slf4j.Slf4j;

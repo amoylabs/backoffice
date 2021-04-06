@@ -77,6 +77,12 @@ public class RedisCacheImpl implements RedisCache {
         redisTemplate.opsForValue().multiSet(values);
     }
 
+    @Override
+    public boolean exists(String key) {
+        Boolean exists = redisTemplate.hasKey(key);
+        return exists != null && exists;
+    }
+
     @Autowired
     public void setRedisTemplate(StringRedisTemplate redisTemplate) {
         this.redisTemplate = redisTemplate;
