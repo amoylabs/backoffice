@@ -1,7 +1,7 @@
 package com.bn.app.config;
 
-import com.bn.authorization.UserAuthorizationInterceptor;
-import com.bn.token.ApiIdempotenceInterceptor;
+import com.bn.web.authorization.UserAuthorizationInterceptor;
+import com.bn.web.token.ApiIdempotenceInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;

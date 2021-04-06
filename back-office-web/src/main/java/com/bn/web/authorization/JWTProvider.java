@@ -1,4 +1,4 @@
-package com.bn.authorization;
+package com.bn.web.authorization;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;

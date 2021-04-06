@@ -1,9 +1,9 @@
 package com.bn.controller;
 
-import com.bn.authorization.JWTProvider;
-import com.bn.authorization.UserAuthorizationRequired;
-import com.bn.authorization.UserRealm;
-import com.bn.authorization.UserRealmContextHolder;
+import com.bn.web.authorization.JWTProvider;
+import com.bn.web.authorization.UserAuthorizationRequired;
+import com.bn.web.authorization.UserRealm;
+import com.bn.web.authorization.UserRealmContextHolder;
 import com.bn.controller.request.CreateUserRequest;
 import com.bn.controller.response.GetUserResponse;
 import com.bn.domain.User;

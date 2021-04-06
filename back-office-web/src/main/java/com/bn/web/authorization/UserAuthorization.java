@@ -1,4 +1,4 @@
-package com.bn.authorization;
+package com.bn.web.authorization;
 
 public final class UserAuthorization {
     static UserAuthorization valid(UserRealm auth) {

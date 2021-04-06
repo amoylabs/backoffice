@@ -1,4 +1,4 @@
-package com.bn.authorization;
+package com.bn.web.authorization;
 
 import lombok.Builder;
 import lombok.Data;

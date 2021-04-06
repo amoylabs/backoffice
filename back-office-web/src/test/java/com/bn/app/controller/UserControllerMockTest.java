@@ -1,6 +1,6 @@
 package com.bn.app.controller;
 
-import com.bn.authorization.UserAuthorizationInterceptor;
+import com.bn.web.authorization.UserAuthorizationInterceptor;
 import com.bn.controller.UserController;
 import com.bn.controller.request.CreateUserRequest;
 import com.bn.domain.User;

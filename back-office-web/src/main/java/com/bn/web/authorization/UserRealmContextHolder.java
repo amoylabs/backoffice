@@ -1,4 +1,4 @@
-package com.bn.authorization;
+package com.bn.web.authorization;
 
 import org.springframework.core.NamedThreadLocal;
 

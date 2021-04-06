@@ -1,4 +1,4 @@
-package com.bn.token;
+package com.bn.web.token;
 
 import cn.hutool.core.util.StrUtil;
 import com.bn.service.TokenService;
