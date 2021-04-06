@@ -78,7 +78,7 @@ public class MDCFilter extends OncePerRequestFilter {
     }
 
     private boolean isIPAddressInvalid(String ip) {
-        return StrUtil.isBlankIfStr(ip) || UNKNOWN_IP_ADDRESS.equalsIgnoreCase(ip);
+        return StrUtil.isBlank(ip) || UNKNOWN_IP_ADDRESS.equalsIgnoreCase(ip);
     }
 
     private static class MultiReadHttpServletRequest extends HttpServletRequestWrapper {

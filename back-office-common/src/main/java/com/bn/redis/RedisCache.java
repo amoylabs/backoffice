@@ -24,4 +24,6 @@ public interface RedisCache {
     Map<String, String> multiGet(String... keys);
 
     void multiSet(Map<String, String> values);
+
+    boolean exists(String key);
 }
