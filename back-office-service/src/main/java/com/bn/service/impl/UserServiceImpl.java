@@ -24,6 +24,11 @@ public class UserServiceImpl implements UserService {
         return userRepository.get(id);
     }
 
+    @Override
+    public User get(String userName) {
+        return userRepository.get(userName);
+    }
+
     @Async
     @Override
     public void doSthAsync() {

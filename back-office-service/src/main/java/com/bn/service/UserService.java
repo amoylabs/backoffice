@@ -7,5 +7,7 @@ public interface UserService {
 
     User get(Long id);
 
+    User get(String userName);
+
     void doSthAsync();
 }
