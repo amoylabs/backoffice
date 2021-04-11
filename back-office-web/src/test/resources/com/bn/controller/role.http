@@ -1,5 +1,5 @@
 ### user auth token
-POST http://localhost:8080/v1/users/auth/hack
+POST http://localhost:8080/v1/auth/hacker
 Content-Type: application/json
 
 > {% client.global.set("auth_token", response.body); %}
@@ -10,7 +10,7 @@ Content-Type: application/json
 Authorization: Bear {{auth_token}}}}
 
 {
-  "name": "THAT_ROLE",
+  "name": "TEST",
   "description": "Role for testing"
 }
 
@@ -23,7 +23,7 @@ Content-Type: application/json
 Authorization: Bear {{auth_token}}}}
 
 {
-  "name": "H_REALM",
+  "name": "TEST",
   "description": "Realm for testing"
 }
 
@@ -41,12 +41,8 @@ Authorization: Bear {{auth_token}}}}
 {
   "roleRealms": [
     {
-      "roleId": "b06f57e9-acc6-40cc-a881-a6f8f8f71e00",
-      "realmIds": ["1545ee91-9c81-4650-a2f1-09be16f4796e", "1cd030ae-b8a1-4578-93cf-e9e8e8d44f4f"]
-    },
-    {
-      "roleId": "98d69db0-4742-4bf8-96b7-7f50c3e23fd7",
-      "realmIds": ["1545ee91-9c81-4650-a2f1-09be16f4796e", "1cd030ae-b8a1-4578-93cf-e9e8e8d44f4f"]
+      "roleId": "d5dc261c-49f5-4709-b7bd-c9203abed024",
+      "realmIds": ["ad25cc1b-384e-4b75-9f4c-a20cbf10ef4f"]
     }
   ]
 }

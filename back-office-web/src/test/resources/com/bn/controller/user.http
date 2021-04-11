@@ -1,5 +1,5 @@
 ### user auth token
-POST http://localhost:8080/v1/users/auth/hack
+POST http://localhost:8080/v1/auth/hacker
 Content-Type: application/json
 
 > {% client.global.set("auth_token", response.body); %}
@@ -10,14 +10,9 @@ Content-Type: application/json
 Authorization: Bear {{auth_token}}}}
 
 {
-  "name": "hacker2",
-  "mobilePhone": "13800000590",
-  "password": "Asdf1234!!!!"
+  "name": "foobar",
+  "password": "q1w2e3r4!!"
 }
 
 ### get user info
-GET http://localhost:8080/v1/users/xxx
-
-### async test
-POST http://localhost:8080/v1/users/async/test
-Content-Type: application/json
+GET http://localhost:8080/v1/users/1

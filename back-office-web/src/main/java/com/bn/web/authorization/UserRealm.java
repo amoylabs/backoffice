@@ -10,7 +10,7 @@ import java.util.List;
 @Builder
 @EqualsAndHashCode(callSuper = false)
 public class UserRealm {
-    public static final String ADMINISTER_AUTH = "super";
+    public static final String SUPER = "__super";
 
     public static UserRealm anonymous() {
         return UserRealm.builder()
