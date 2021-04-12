@@ -15,7 +15,4 @@ public class AuthorizeUserRequest {
 
     @NotBlank(message = "user login failure")
     private String pd;
-
-    @NotBlank(message = "user login failure")
-    private String pk;
 }
