@@ -1,13 +1,13 @@
 package com.bn.controller;
 
-import com.bn.web.authorization.JWTProvider;
-import com.bn.web.authorization.UserAuthorizationRequired;
-import com.bn.web.authorization.UserRealm;
-import com.bn.web.authorization.UserRealmContextHolder;
+import cn.hutool.core.codec.Base64;
 import com.bn.controller.request.CreateUserRequest;
 import com.bn.controller.response.GetUserResponse;
 import com.bn.domain.User;
 import com.bn.service.UserService;
+import com.bn.web.authorization.UserAuthorizationRequired;
+import com.bn.web.authorization.UserRealm;
+import com.bn.web.authorization.UserRealmContextHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,9 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.ThreadLocalRandom;
 
 @RequestMapping("v1/users")
 @RestController
@@ -53,27 +51,10 @@ public class UserController {
             .name(request.getName())
             .mobilePhone(request.getMobilePhone())
             .email(request.getEmail())
-            .password(request.getPassword())
+            .password(Base64.decodeStr(request.getPassword()))
             .build();
         UserRealm context = Objects.requireNonNull(UserRealmContextHolder.get());
         return userService.create(user, context.getUserName());
-    }
-
-    @PostMapping("async/test")
-    public void executeAsyncTask() {
-        log.info("Execute Async Task : {}", System.currentTimeMillis());
-        userService.doSthAsync();
-        log.info("End immediately : {}", System.currentTimeMillis());
-    }
-
-    @PostMapping("auth/hack")
-    public String authorize() {
-        UserRealm auth = UserRealm.builder()
-            .userId(String.valueOf(ThreadLocalRandom.current().nextLong()))
-            .userName("HACK")
-            .realms(List.of(UserRealm.ADMINISTER_AUTH))
-            .build(); // FIXME hack user
-        return JWTProvider.generateToken(auth);
     }
 
     @Autowired

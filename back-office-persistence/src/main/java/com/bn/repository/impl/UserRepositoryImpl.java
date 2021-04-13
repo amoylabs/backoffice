@@ -27,6 +27,16 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public User get(String userName) {
+        UserDO userDO = userMapper.selectByName(userName);
+        if (userDO == null) {
+            throw new NotFoundException("user not found - " + userName);
+        }
+
+        return UserBuilder.fromDO(userDO);
+    }
+
+    @Override
     public Long save(User user, String createdBy) {
         UserDO existingUser = userMapper.selectByName(user.getName());
         if (existingUser != null) {

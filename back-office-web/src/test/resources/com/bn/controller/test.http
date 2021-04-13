@@ -4,7 +4,6 @@ GET http://localhost:8080/v1/token
 > {% client.global.set("api_token", response.body); %}
 
 
-
 ### submit with token
-POST http://localhost:8080/v1/token
+POST http://localhost:8080/v1/tests/api-idempotence
 Idempotent-Api-Token: {{api_token}}

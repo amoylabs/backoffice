@@ -14,13 +14,12 @@ public class User {
     private String password;
     private String passwordSalt;
     private UserStatus status;
-
-    private void generatePasswordSalt() {
-        this.passwordSalt = PasswordUtils.getSalt();
-    }
+    private String roleId;
 
     public void initialize() {
-        generatePasswordSalt();
+        final String passwordSalt = PasswordUtils.getSalt();
+        setPassword(PasswordUtils.generateSecurePassword(password, passwordSalt));
+        setPasswordSalt(passwordSalt);
         setStatus(UserStatus.ACTIVE);
     }
 }

@@ -37,7 +37,7 @@ public class UserAuthorizationInterceptor implements HandlerInterceptor {
                 return false;
             }
 
-            if (userRealm.getRealms().contains(UserRealm.ADMINISTER_AUTH)) {
+            if (userRealm.getRealms().contains(UserRealm.SUPER)) {
                 return true;
             }
 
