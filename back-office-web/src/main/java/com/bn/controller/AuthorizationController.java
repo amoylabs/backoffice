@@ -1,13 +1,17 @@
 package com.bn.controller;
 
 import cn.hutool.core.codec.Base64;
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.crypto.digest.HMac;
 import cn.hutool.crypto.digest.HmacAlgorithm;
 import com.bn.controller.request.AuthorizeUserRequest;
 import com.bn.domain.App;
+import com.bn.domain.Realm;
+import com.bn.domain.RoleRealmSetting;
 import com.bn.domain.User;
 import com.bn.exception.BadRequestException;
 import com.bn.service.AppService;
+import com.bn.service.RoleService;
 import com.bn.service.UserService;
 import com.bn.util.PasswordUtils;
 import com.bn.web.authorization.JWTProvider;
@@ -28,6 +32,7 @@ import javax.validation.constraints.NotEmpty;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 @RequestMapping("v1/auth")
 @RestController
@@ -36,6 +41,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class AuthorizationController {
     private AppService appService;
     private UserService userService;
+    private RoleService roleService;
 
     @PostMapping("hacker")
     public String authorizeHacker() {
@@ -43,7 +49,7 @@ public class AuthorizationController {
             .userId(String.valueOf(ThreadLocalRandom.current().nextLong()))
             .userName("Hacker")
             .realms(List.of(UserRealm.SUPER))
-            .build(); // TODO should be removed
+            .build(); // FIXME should be removed
         return JWTProvider.generateToken(auth);
     }
 
@@ -68,17 +74,22 @@ public class AuthorizationController {
 
     @PostMapping("user")
     public String authorizeUser(@Valid @RequestBody AuthorizeUserRequest request) {
-        User user = userService.get(request.getUn());
+        User user = userService.get(Base64.decodeStr(request.getUn()));
         String password = Base64.decodeStr(request.getPd());
         if (!PasswordUtils.verifyPassword(password, user.getPassword(), user.getPasswordSalt())) {
             throw new BadRequestException("User authorization failure");
         }
 
+        RoleRealmSetting realm = roleService.getRealms4Role(user.getRoleId());
         UserRealm auth = UserRealm.builder()
             .userId(String.valueOf(user.getId()))
             .userName(user.getName())
-            .realms(List.of()) // TODO to load user realms and set here
+            .realms(List.of())
             .build();
+        if (CollectionUtil.isNotEmpty(realm.getRealms())) {
+            auth.setRealms(realm.getRealms().stream().map(Realm::getName).collect(Collectors.toList()));
+        }
+
         return JWTProvider.generateToken(auth);
     }
 
@@ -90,5 +101,10 @@ public class AuthorizationController {
     @Autowired
     public void setUserService(UserService userService) {
         this.userService = userService;
+    }
+
+    @Autowired
+    public void setRoleService(RoleService roleService) {
+        this.roleService = roleService;
     }
 }

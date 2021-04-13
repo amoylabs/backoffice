@@ -14,6 +14,7 @@ public class User {
     private String password;
     private String passwordSalt;
     private UserStatus status;
+    private String roleId;
 
     public void initialize() {
         final String passwordSalt = PasswordUtils.getSalt();

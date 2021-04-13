@@ -1,5 +1,6 @@
 package com.bn.controller;
 
+import cn.hutool.core.codec.Base64;
 import com.bn.controller.request.CreateUserRequest;
 import com.bn.controller.response.GetUserResponse;
 import com.bn.domain.User;
@@ -50,7 +51,7 @@ public class UserController {
             .name(request.getName())
             .mobilePhone(request.getMobilePhone())
             .email(request.getEmail())
-            .password(request.getPassword()) // FIXME should pass encrypted password
+            .password(Base64.decodeStr(request.getPassword()))
             .build();
         UserRealm context = Objects.requireNonNull(UserRealmContextHolder.get());
         return userService.create(user, context.getUserName());

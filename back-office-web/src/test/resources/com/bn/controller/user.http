@@ -11,7 +11,7 @@ Authorization: Bear {{auth_token}}}}
 
 {
   "name": "foobar",
-  "password": "q1w2e3r4!!"
+  "password": "cTF3MmUzcjQhIQ=="
 }
 
 ### get user info

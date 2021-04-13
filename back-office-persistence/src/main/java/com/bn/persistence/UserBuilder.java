@@ -12,6 +12,7 @@ public interface UserBuilder {
             .password(user.getPassword())
             .passwordSalt(user.getPasswordSalt())
             .status(user.getStatus())
+            .roleId(user.getRoleId())
             .build();
     }
 
@@ -24,6 +25,7 @@ public interface UserBuilder {
             .password(userDO.getPassword())
             .passwordSalt(userDO.getPasswordSalt())
             .status(userDO.getStatus())
+            .roleId(userDO.getRoleId())
             .build();
     }
 }
