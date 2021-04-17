@@ -5,11 +5,12 @@ spring:
     username: root
     password: root
   redis:
-    url: redis://localhost:6379
+    host: redis-svc.redis
+    port: 6379
     ssl: false
     database: 0
     timeout: 1000
-    password:
+    password: Hello1234!!!!
     lettuce:
       pool:
         max-active: 100
