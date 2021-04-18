@@ -1,11 +1,11 @@
 ### user auth token
-POST http://localhost:8080/v1/auth/hacker
+POST {{base_url}}/v1/auth/hacker
 Content-Type: application/json
 
 > {% client.global.set("auth_token", response.body); %}
 
 ### create user
-POST http://localhost:8080/v1/users
+POST {{base_url}}/v1/users
 Content-Type: application/json
 Authorization: Bear {{auth_token}}}}
 
@@ -15,4 +15,4 @@ Authorization: Bear {{auth_token}}}}
 }
 
 ### get user info
-GET http://localhost:8080/v1/users/1
+GET {{base_url}}/v1/users/1
