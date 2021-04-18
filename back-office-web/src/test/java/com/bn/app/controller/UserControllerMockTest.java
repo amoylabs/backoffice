@@ -1,23 +1,19 @@
 package com.bn.app.controller;
 
-import com.bn.web.authorization.UserAuthorizationInterceptor;
+import com.bn.app.ControllerMockTest;
 import com.bn.controller.UserController;
 import com.bn.controller.request.CreateUserRequest;
 import com.bn.domain.User;
 import com.bn.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-
-import java.io.IOException;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -28,26 +24,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(UserController.class)
-public class UserControllerMockTest {
+public class UserControllerMockTest extends ControllerMockTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
     @MockBean
-    private RedisProperties redisProperties;
-    @MockBean
-    private UserAuthorizationInterceptor userAuthorizationInterceptor;
-    @MockBean
     private UserService userService;
-
-    @BeforeEach
-    void setup() throws IOException {
-        when(userAuthorizationInterceptor.preHandle(any(), any(), any())).thenReturn(Boolean.TRUE);
-        when(redisProperties.getHost()).thenReturn("127.0.0.1");
-        when(redisProperties.getPort()).thenReturn(6379);
-        when(redisProperties.getPassword()).thenReturn("pwd");
-        when(redisProperties.getDatabase()).thenReturn(0);
-    }
 
     @Test
     public void createUser() throws Exception {

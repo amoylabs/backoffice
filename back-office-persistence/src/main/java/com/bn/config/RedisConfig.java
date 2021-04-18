@@ -24,12 +24,13 @@ public class RedisConfig {
         if (redisProperties.getPort() != 0) {
             redisStandaloneConfiguration.setPort(redisProperties.getPort());
         }
-        if (redisProperties.getPort() != 0) {
+        if (redisProperties.getDatabase() != 0) {
             redisStandaloneConfiguration.setDatabase(redisProperties.getDatabase());
         }
         if (StringUtils.hasText(redisProperties.getPassword())) {
             redisStandaloneConfiguration.setPassword(redisProperties.getPassword());
         }
+
         return new LettuceConnectionFactory(redisStandaloneConfiguration);
     }
 
