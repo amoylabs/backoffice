@@ -1,0 +1,27 @@
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: backoffice-dep
+  namespace: backoffice
+spec:
+  selector:
+    matchLabels:
+      app: backoffice
+  replicas: 1 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: backoffice
+    spec:
+      containers:
+        - name: backoffice-springboot
+          image: backoffice-image
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          command:
+            - "java"
+          args:
+            - "-Dspring.profiles.active=qa"
+            - "-jar"
+            - "/opt/app/app.jar"
