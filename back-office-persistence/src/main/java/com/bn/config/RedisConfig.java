@@ -1,5 +1,6 @@
 package com.bn.config;
 
+import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -12,9 +13,15 @@ import org.springframework.data.redis.core.StringRedisTemplate;
  */
 @Configuration
 public class RedisConfig {
+
     @Bean
-    public LettuceConnectionFactory redisConnectionFactory() {
-        return new LettuceConnectionFactory(new RedisStandaloneConfiguration());
+    public LettuceConnectionFactory redisConnectionFactory(RedisProperties redisProperties) {
+        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
+        redisStandaloneConfiguration.setHostName(redisProperties.getHost());
+        redisStandaloneConfiguration.setPort(redisProperties.getPort());
+        redisStandaloneConfiguration.setDatabase(redisProperties.getDatabase());
+        redisStandaloneConfiguration.setPassword(redisProperties.getPassword());
+        return new LettuceConnectionFactory(redisStandaloneConfiguration);
     }
 
     // @Bean

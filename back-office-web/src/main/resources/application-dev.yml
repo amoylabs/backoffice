@@ -5,7 +5,8 @@ spring:
     username: dev
     password: dev
   redis:
-    url: redis://localhost:6379
+    host: localhost
+    port: 6379
     ssl: false
     database: 0
     timeout: 1000
