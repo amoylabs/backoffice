@@ -7,6 +7,7 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.util.StringUtils;
 
 /**
  * @author beckl
@@ -17,10 +18,18 @@ public class RedisConfig {
     @Bean
     public LettuceConnectionFactory redisConnectionFactory(RedisProperties redisProperties) {
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
-        redisStandaloneConfiguration.setHostName(redisProperties.getHost());
-        redisStandaloneConfiguration.setPort(redisProperties.getPort());
-        redisStandaloneConfiguration.setDatabase(redisProperties.getDatabase());
-        redisStandaloneConfiguration.setPassword(redisProperties.getPassword());
+        if (StringUtils.hasText(redisProperties.getHost())) {
+            redisStandaloneConfiguration.setHostName(redisProperties.getHost());
+        }
+        if (redisProperties.getPort() != 0) {
+            redisStandaloneConfiguration.setPort(redisProperties.getPort());
+        }
+        if (redisProperties.getPort() != 0) {
+            redisStandaloneConfiguration.setDatabase(redisProperties.getDatabase());
+        }
+        if (StringUtils.hasText(redisProperties.getPassword())) {
+            redisStandaloneConfiguration.setPassword(redisProperties.getPassword());
+        }
         return new LettuceConnectionFactory(redisStandaloneConfiguration);
     }
 

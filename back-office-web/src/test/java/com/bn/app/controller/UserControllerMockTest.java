@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -33,6 +34,8 @@ public class UserControllerMockTest {
     @Autowired
     private ObjectMapper objectMapper;
     @MockBean
+    private RedisProperties redisProperties;
+    @MockBean
     private UserAuthorizationInterceptor userAuthorizationInterceptor;
     @MockBean
     private UserService userService;
@@ -40,6 +43,10 @@ public class UserControllerMockTest {
     @BeforeEach
     void setup() throws IOException {
         when(userAuthorizationInterceptor.preHandle(any(), any(), any())).thenReturn(Boolean.TRUE);
+        when(redisProperties.getHost()).thenReturn("127.0.0.1");
+        when(redisProperties.getPort()).thenReturn(6379);
+        when(redisProperties.getPassword()).thenReturn("pwd");
+        when(redisProperties.getDatabase()).thenReturn(0);
     }
 
     @Test
