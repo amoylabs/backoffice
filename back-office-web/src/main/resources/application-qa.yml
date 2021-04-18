@@ -2,8 +2,8 @@ spring:
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
     jdbcUrl: jdbc:mysql://mysql-svc.mysql:3306/main
-    username: root
-    password: root
+    username: qa
+    password: qa
   redis:
     host: redis-svc.redis
     port: 6379
