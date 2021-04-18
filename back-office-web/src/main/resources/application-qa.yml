@@ -5,7 +5,7 @@ spring:
     username: root
     password: root
   redis:
-    host: 192.168.2.130
+    host: redis-svc.redis
     port: 6379
     ssl: false
     database: 0
