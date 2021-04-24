@@ -6,6 +6,7 @@ import org.redisson.api.RedissonClient;
 import org.redisson.codec.JsonJacksonCodec;
 import org.redisson.config.Config;
 import org.redisson.config.SingleServerConfig;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,7 +23,8 @@ import org.springframework.util.StringUtils;
 @Configuration
 @Lazy
 public class RedisConfig {
-    private static final String REDIS_CLIENT_NAME = "backoffice";
+    @Value("${spring.application.name}")
+    private String applicationName;
 
     @Bean
     public LettuceConnectionFactory redisConnectionFactory(RedisProperties redisProperties) {
@@ -56,7 +58,7 @@ public class RedisConfig {
         config.setThreads(0); // No suppose to use external ExecutorService
 
         SingleServerConfig serverConfig = config.useSingleServer();
-        serverConfig.setClientName(REDIS_CLIENT_NAME);
+        serverConfig.setClientName(applicationName);
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(); // use this to get default redis host & port
         String host = StringUtils.hasText(redisProperties.getHost()) ? redisProperties.getHost() : redisStandaloneConfiguration.getHostName();
         int port = redisProperties.getPort() > 0 ? redisProperties.getPort() : redisStandaloneConfiguration.getPort();
