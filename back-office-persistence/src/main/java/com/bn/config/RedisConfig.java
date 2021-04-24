@@ -9,6 +9,7 @@ import org.redisson.config.SingleServerConfig;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
@@ -19,6 +20,7 @@ import org.springframework.util.StringUtils;
  * @author beckl
  */
 @Configuration
+@Lazy
 public class RedisConfig {
     private static final String REDIS_CLIENT_NAME = "backoffice";
 
@@ -40,13 +42,6 @@ public class RedisConfig {
 
         return new LettuceConnectionFactory(redisStandaloneConfiguration);
     }
-
-    // @Bean
-    // public LettuceConnectionFactory redisConnectionFactory() {
-    //     LettuceClientConfiguration clientConfig = LettuceClientConfiguration.builder().readFrom(REPLICA_PREFERRED).build();
-    //     RedisStandaloneConfiguration serverConfig = new RedisStandaloneConfiguration("localhost", 6379);
-    //     return new LettuceConnectionFactory(serverConfig, clientConfig);
-    // }
 
     @Bean
     public StringRedisTemplate stringRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
