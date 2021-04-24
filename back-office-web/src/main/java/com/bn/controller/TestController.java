@@ -36,6 +36,12 @@ public class TestController {
         log.info("Access Successfully");
     }
 
+    @PostMapping("api-user-limit")
+    @ApiRateLimiter(userBase = true, rate = 5, rateInterval = 10)
+    public String testApiUserBaseLimit() {
+        return "OK";
+    }
+
     @GetMapping("a")
     public String testA() {
         return "You got A";

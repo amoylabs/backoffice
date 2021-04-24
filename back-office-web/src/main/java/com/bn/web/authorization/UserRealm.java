@@ -1,8 +1,11 @@
 package com.bn.web.authorization;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Setter;
 
 import java.util.List;
 
@@ -16,6 +19,7 @@ public class UserRealm {
         return UserRealm.builder()
             .userId("0")
             .userName("anonymous")
+            .isAnonymous(true)
             .realms(List.of())
             .build();
     }
@@ -23,4 +27,8 @@ public class UserRealm {
     private String userId;
     private String userName;
     private List<String> realms; // user realms
+
+    @JsonIgnore
+    @Setter(AccessLevel.NONE)
+    private boolean isAnonymous;
 }

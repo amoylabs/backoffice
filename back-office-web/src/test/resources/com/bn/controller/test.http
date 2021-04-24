@@ -11,3 +11,8 @@ Idempotent-Api-Token: {{api_token}}
 
 ### test api limit
 POST {{base_url}}/v1/tests/api-limit
+
+
+### test api user limit
+POST {{base_url}}/v1/tests/api-user-limit
+Authorization: Bear eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJKV1MgLSBIYWNrZXIiLCJyZWFsbSI6eyJyZWFsbXMiOlsiX19zdXBlciJdLCJ1c2VyTmFtZSI6IkhhY2tlciIsInVzZXJJZCI6IjM3NzE0NTI5MDIxNzc3Nzc3NjciLCJpc0Fub255bW91cyI6ZmFsc2V9LCJleHAiOjE2MTkyODQxMjEyMDUsImlhdCI6MTYxOTI1NTMyMTIwNSwianRpIjoiMWEzODYyZGEtMWM5Zi00NGY1LTk4MDQtNjQ5ZGU0NzhiZDQyIn0.hQvB8WRZnxuQCOpcvbeWiEosBTbo9Fjby03GfsI5jos

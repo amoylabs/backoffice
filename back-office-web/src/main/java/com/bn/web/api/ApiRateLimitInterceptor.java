@@ -1,6 +1,9 @@
 package com.bn.web.api;
 
 import com.bn.redis.RateLimiter;
+import com.bn.util.WebUtils;
+import com.bn.web.authorization.UserRealm;
+import com.bn.web.authorization.UserRealmContextHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,14 +42,26 @@ public class ApiRateLimitInterceptor implements HandlerInterceptor {
             return false;
         }
 
-        // TODO add api base and user base implementations
-        String apiRateLimiterKey = "api:rate:limit:" + apiPath.get();
-        boolean isAlreadySet = rateLimiter.trySetRate(apiRateLimiterKey, apiRateLimiter.rate(), apiRateLimiter.rateInterval(), apiRateLimiter.intervalUnit());
+        StringBuilder apiRateLimiterKey = new StringBuilder("api:rate:limit:");
+        apiRateLimiterKey.append(apiPath.get());
+        if (apiRateLimiter.ipAddressBase()) {
+            apiRateLimiterKey.append('#').append(WebUtils.getClientIpAddress(request));
+        } else if (apiRateLimiter.userBase()) {
+            UserRealm user = UserRealmContextHolder.get();
+            if (user.isAnonymous()) {
+                log.warn("Unable to recognize the user as it's anonymous");
+                sendError(response, HttpStatus.PRECONDITION_REQUIRED, "Unable to recognize the user");
+                return false;
+            }
+            apiRateLimiterKey.append('#').append(user.getUserId());
+        }
+
+        boolean isAlreadySet = rateLimiter.trySetRate(apiRateLimiterKey.toString(), apiRateLimiter.rate(), apiRateLimiter.rateInterval(), apiRateLimiter.intervalUnit());
         if (isAlreadySet) {
             log.info("Api rate limiter is set - {}", apiPath.get());
         }
 
-        boolean tryAcquireApiPermit = rateLimiter.tryAcquire(apiRateLimiterKey);
+        boolean tryAcquireApiPermit = rateLimiter.tryAcquire(apiRateLimiterKey.toString());
         if (tryAcquireApiPermit) {
             return true;
         }
@@ -70,6 +85,10 @@ public class ApiRateLimitInterceptor implements HandlerInterceptor {
     }
 
     private void sendError(HttpServletResponse response, HttpStatus status) throws IOException {
+        sendError(response, status, status.getReasonPhrase());
+    }
+
+    private void sendError(HttpServletResponse response, HttpStatus status, String message) throws IOException {
         response.setStatus(status.value());
         response.getWriter().write(status.getReasonPhrase());
     }

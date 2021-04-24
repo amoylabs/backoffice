@@ -24,9 +24,9 @@ public class ApiRateLimiterInspector implements ApplicationListener<ApplicationR
                 continue;
             }
 
-            if (!apiRateLimiter.apiBase() && !apiRateLimiter.userBase()) {
+            if (apiRateLimiter.userBase() && apiRateLimiter.ipAddressBase()) {
                 hasRateLimitSettingIssue = true;
-                log.error("Incorrect api rate limit setting on {}.{}", method.getBeanType().getSimpleName(), method.getMethod().getName());
+                log.error("Should have only one rate limit base on {}.{}", method.getBeanType().getSimpleName(), method.getMethod().getName());
             }
         }
 

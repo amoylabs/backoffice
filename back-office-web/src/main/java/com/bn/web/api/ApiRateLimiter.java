@@ -12,7 +12,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 public @interface ApiRateLimiter {
     boolean userBase() default false;
 
-    boolean apiBase() default true;
+    boolean ipAddressBase() default false;
 
     long rate();
 
