@@ -7,3 +7,11 @@ GET {{base_url}}/v1/token
 ### submit with token
 POST {{base_url}}/v1/tests/api-idempotence
 Idempotent-Api-Token: {{api_token}}
+
+
+### test api limit
+POST {{base_url}}/v1/tests/api-limit
+
+
+### test api user limit
+POST {{base_url}}/v1/tests/api-user-limit

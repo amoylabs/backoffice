@@ -1,8 +1,9 @@
 package com.bn.controller;
 
 import com.bn.service.UserService;
+import com.bn.web.api.ApiIdempotence;
+import com.bn.web.api.ApiRateLimiter;
 import com.bn.web.authorization.UserAuthorizationRequired;
-import com.bn.web.token.ApiIdempotence;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,8 +26,20 @@ public class TestController {
 
     @PostMapping("api-idempotence")
     @ApiIdempotence
-    public void submit() {
+    public void submitWithApiIdempotence() {
         log.info("Submit Successfully");
+    }
+
+    @PostMapping("api-limit")
+    @ApiRateLimiter(rate = 5, rateInterval = 10)
+    public void testApiLimit() {
+        log.info("Access Successfully");
+    }
+
+    @PostMapping("api-user-limit")
+    @ApiRateLimiter(userBase = true, rate = 5, rateInterval = 10)
+    public String testApiUserBaseLimit() {
+        return "OK";
     }
 
     @GetMapping("a")

@@ -11,12 +11,6 @@ spring:
     database: 0
     timeout: 1000
     password:
-    lettuce:
-      pool:
-        max-active: 100
-        max-wait: -1
-        min-idle: 0
-        max-idle: 20
   task:
     execution:
       pool:

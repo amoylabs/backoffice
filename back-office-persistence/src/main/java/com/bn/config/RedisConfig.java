@@ -1,8 +1,16 @@
 package com.bn.config;
 
+import cn.hutool.core.util.StrUtil;
+import org.redisson.Redisson;
+import org.redisson.api.RedissonClient;
+import org.redisson.codec.JsonJacksonCodec;
+import org.redisson.config.Config;
+import org.redisson.config.SingleServerConfig;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
@@ -13,7 +21,10 @@ import org.springframework.util.StringUtils;
  * @author beckl
  */
 @Configuration
+@Lazy
 public class RedisConfig {
+    @Value("${spring.application.name}")
+    private String applicationName;
 
     @Bean
     public LettuceConnectionFactory redisConnectionFactory(RedisProperties redisProperties) {
@@ -21,10 +32,10 @@ public class RedisConfig {
         if (StringUtils.hasText(redisProperties.getHost())) {
             redisStandaloneConfiguration.setHostName(redisProperties.getHost());
         }
-        if (redisProperties.getPort() != 0) {
+        if (redisProperties.getPort() > 0) {
             redisStandaloneConfiguration.setPort(redisProperties.getPort());
         }
-        if (redisProperties.getDatabase() != 0) {
+        if (redisProperties.getDatabase() >= 0) {
             redisStandaloneConfiguration.setDatabase(redisProperties.getDatabase());
         }
         if (StringUtils.hasText(redisProperties.getPassword())) {
@@ -34,15 +45,31 @@ public class RedisConfig {
         return new LettuceConnectionFactory(redisStandaloneConfiguration);
     }
 
-    // @Bean
-    // public LettuceConnectionFactory redisConnectionFactory() {
-    //     LettuceClientConfiguration clientConfig = LettuceClientConfiguration.builder().readFrom(REPLICA_PREFERRED).build();
-    //     RedisStandaloneConfiguration serverConfig = new RedisStandaloneConfiguration("localhost", 6379);
-    //     return new LettuceConnectionFactory(serverConfig, clientConfig);
-    // }
-
     @Bean
     public StringRedisTemplate stringRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
         return new StringRedisTemplate(redisConnectionFactory);
+    }
+
+    @Bean(destroyMethod = "shutdown")
+    public RedissonClient redissonClient(RedisProperties redisProperties) {
+        Config config = new Config();
+        config.setCodec(JsonJacksonCodec.INSTANCE);
+        config.setNettyThreads(Runtime.getRuntime().availableProcessors());
+        config.setThreads(0); // No suppose to use external ExecutorService
+
+        SingleServerConfig serverConfig = config.useSingleServer();
+        serverConfig.setClientName(applicationName);
+        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(); // use this to get default redis host & port
+        String host = StringUtils.hasText(redisProperties.getHost()) ? redisProperties.getHost() : redisStandaloneConfiguration.getHostName();
+        int port = redisProperties.getPort() > 0 ? redisProperties.getPort() : redisStandaloneConfiguration.getPort();
+        serverConfig.setAddress(StrUtil.format("redis://{}:{}", host, port));
+        if (redisProperties.getDatabase() >= 0) {
+            serverConfig.setDatabase(redisProperties.getDatabase());
+        }
+        if (StringUtils.hasText(redisProperties.getPassword())) {
+            serverConfig.setPassword(redisProperties.getPassword());
+        }
+
+        return Redisson.create(config);
     }
 }

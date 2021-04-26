@@ -1,4 +1,4 @@
-package com.bn.web.token;
+package com.bn.web.api;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
