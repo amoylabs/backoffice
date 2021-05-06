@@ -25,7 +25,6 @@ import java.util.concurrent.locks.ReentrantLock;
 public class BlockingHashMap<K, V> implements BlockingMap<K, V> {
     private final int capacity;
     private final ConcurrentMap<K, V> map;
-    private final ConcurrentMap<K, Condition> lockMap;
 
     // Main lock guarding all access
     private final ReentrantLock lock;
@@ -33,6 +32,8 @@ public class BlockingHashMap<K, V> implements BlockingMap<K, V> {
     private final Condition notEmpty;
     // Condition for waiting puts
     private final Condition notFull;
+    // Condition for waiting operation on each keys
+    private final ConcurrentMap<K, Condition> lockMap;
 
     public BlockingHashMap(int capacity) {
         this(capacity, false);
@@ -124,6 +125,10 @@ public class BlockingHashMap<K, V> implements BlockingMap<K, V> {
         }
     }
 
+    /**
+     * CAUTION: Need to be 100% sure that the requested key will be put into the map somewhen,
+     * otherwise, this method will be blocked the whole time.
+     */
     @Override
     public V take(K key) throws InterruptedException {
         Objects.requireNonNull(key);
@@ -138,6 +143,7 @@ public class BlockingHashMap<K, V> implements BlockingMap<K, V> {
                 keyToCondition(key).await();
             }
             map.remove(key);
+            lockMap.remove(key);
             notFull.signal();
             return val;
         } finally {
@@ -166,6 +172,7 @@ public class BlockingHashMap<K, V> implements BlockingMap<K, V> {
                 nanos = keyToCondition(key).awaitNanos(nanos);
             }
             map.remove(key);
+            lockMap.remove(key);
             notFull.signal();
             return val;
         } finally {
@@ -187,6 +194,7 @@ public class BlockingHashMap<K, V> implements BlockingMap<K, V> {
                 return null;
             }
             map.remove(key);
+            lockMap.remove(key);
             notFull.signal();
             return val;
         } finally {
@@ -201,7 +209,9 @@ public class BlockingHashMap<K, V> implements BlockingMap<K, V> {
         lock.lock();
         try {
             if (map.size() > 0 && map.containsKey(key)) {
-                return map.remove(key);
+                V val = map.remove(key);
+                lockMap.remove(key);
+                return val;
             }
             throw new NoSuchElementException("Map is empty");
         } finally {
@@ -266,6 +276,12 @@ public class BlockingHashMap<K, V> implements BlockingMap<K, V> {
                 for (; k > 0 && lock.hasWaiters(notFull); k--) {
                     notFull.signal();
                 }
+                for (Condition c : lockMap.values()) {
+                    if (lock.hasWaiters(c)) {
+                        c.signal();
+                    }
+                }
+                lockMap.clear();
             }
         } finally {
             lock.unlock();
