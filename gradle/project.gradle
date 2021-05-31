@@ -21,6 +21,9 @@ subprojects {
         mavenLocal()
         mavenCentral()
         jcenter()
+        maven {
+            url "https://raw.github.com/guuuuo/mvn-repo/master/"
+        }
     }
 
     dependencies {
