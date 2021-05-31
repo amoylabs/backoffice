@@ -9,4 +9,4 @@ namespace: backoffice
 images:
 - name: backoffice-image
   newName: xmniko/backoffice
-  newTag: ffd2cd467060ca6a007bbd1ea663845077d05fc2
+  newTag: 19816fb0ac7b9b53835a05940446f6513bf7cc2b
