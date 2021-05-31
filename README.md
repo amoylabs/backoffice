@@ -1,5 +1,6 @@
 # Back Office
 The Back Office system built by general requirement
+[![Docker Image CI](https://github.com/amoylabs/backoffice/actions/workflows/docker-image.yml/badge.svg)](https://github.com/amoylabs/backoffice/actions/workflows/docker-image.yml)
 
 ## Prerequisites
 - [Docker](https://docs.docker.com/get-docker)
