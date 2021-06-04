@@ -22,7 +22,7 @@ subprojects {
         mavenCentral()
         jcenter()
         maven {
-            url "https://raw.github.com/guuuuo/mvn-repo/master/"
+            url "https://raw.github.com/sfe4j/mvn-repo/master/"
         }
     }
 
