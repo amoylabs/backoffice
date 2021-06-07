@@ -10,3 +10,7 @@ server:
   undertow:
     accesslog:
       pattern: "%h %l %u %t \"%r\" %s %b \"%{i,Referer}\" \"%{i,User-Agent}\" %D"
+
+sfe4j:
+  quick-links:
+    logs: "/logs"
