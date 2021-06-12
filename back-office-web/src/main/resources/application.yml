@@ -17,5 +17,5 @@ sfe4j:
   quick-links:
     root: "/"
     logs: "/data/logs"
-  base-dir-path: "/"
-  restrict-to-base-dir: false
+  base-dir-path: "/data"
+  restrict-to-base-dir: true
