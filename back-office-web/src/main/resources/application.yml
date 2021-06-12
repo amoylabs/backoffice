@@ -12,5 +12,10 @@ server:
       pattern: "%h %l %u %t \"%r\" %s %b \"%{i,Referer}\" \"%{i,User-Agent}\" %D"
 
 sfe4j:
+  title: "SFE4J Demo"
+  description: "Simple File Explorer for spring-boot based Java Web Application."
   quick-links:
-    logs: "/logs"
+    root: "/"
+    logs: "/data/logs"
+  base-dir-path: "/"
+  restrict-to-base-dir: false
