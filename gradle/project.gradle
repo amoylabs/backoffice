@@ -21,6 +21,9 @@ subprojects {
         mavenLocal()
         mavenCentral()
         jcenter()
+        maven {
+            url "https://raw.github.com/sfe4j/mvn-repo/master/"
+        }
     }
 
     dependencies {

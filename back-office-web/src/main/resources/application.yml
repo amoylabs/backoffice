@@ -12,3 +12,12 @@ server:
   undertow:
     accesslog:
       pattern: "%h %l %u %t \"%r\" %s %b \"%{i,Referer}\" \"%{i,User-Agent}\" %D"
+
+sfe4j:
+  title: "SFE4J Demo"
+  description: "Simple File Explorer for spring-boot based Java Web Application."
+  quick-links:
+    root: "/"
+    logs: "/data/logs"
+  base-dir-path: "/data"
+  restrict-to-base-dir: true
